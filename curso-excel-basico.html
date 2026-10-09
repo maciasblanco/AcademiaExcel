@@ -1,0 +1,1724 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curso Intensivo de Excel Básico</title>
+<style>
+  :root {
+    --bg-main: #090d16;
+    --bg-slide: #101726;
+    --bg-side: #0b111e;
+    --border-color: #1e293b;
+    --accent-green: #10b981;
+    --accent-emerald: #34d399;
+    --accent-blue: #38bdf8;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+    overflow: hidden;
+  }
+
+  .app { display: flex; width: 100vw; height: 100vh; }
+
+  /* ============ SIDEBAR ============ */
+  .sidebar {
+    width: 20%;
+    min-width: 230px;
+    max-width: 340px;
+    flex-shrink: 0;
+    background: var(--bg-side);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 22px 18px 16px;
+  }
+  .sidebar::-webkit-scrollbar { width: 5px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+  .kicker {
+    font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--accent-blue); font-weight: 700;
+  }
+  .sidebar h1 {
+    font-size: 21px; color: var(--accent-emerald);
+    line-height: 1.2; margin: 6px 0 6px; font-weight: 700;
+  }
+  .sidebar-sub {
+    font-size: 12px; color: var(--text-muted);
+    font-style: italic; margin-bottom: 12px; line-height: 1.4;
+  }
+  .badges { margin-bottom: 12px; }
+  .badge {
+    display: inline-block;
+    background: rgba(16, 185, 129, 0.13);
+    color: var(--accent-emerald);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    padding: 3px 9px; border-radius: 20px;
+    font-size: 10.5px; margin: 0 3px 5px 0;
+    font-weight: 600; white-space: nowrap;
+  }
+  .info-box {
+    font-size: 11.5px; color: #94a3b8; line-height: 1.7;
+    padding: 10px 12px; background: rgba(15, 23, 42, 0.7);
+    border: 1px solid var(--border-color);
+    border-radius: 10px; margin-bottom: 18px;
+  }
+  .info-box p { margin: 0; }
+
+  .sidebar-nav { flex: 1; }
+  .nav-day { margin-bottom: 16px; }
+  .nav-day h2.nav-item {
+    font-size: 11.5px; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--accent-blue); padding: 6px 8px; border-radius: 8px;
+    border: 1px dashed rgba(56, 189, 248, 0.35);
+    margin-bottom: 8px; cursor: pointer; transition: all .18s;
+    display: flex; align-items: center; gap: 6px; font-weight: 700;
+  }
+  .nav-day h2.nav-item::before {
+    content: ''; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent-blue); box-shadow: 0 0 8px var(--accent-blue);
+    flex-shrink: 0;
+  }
+  .nav-day h2.nav-item:hover { background: #1e293b; }
+  .nav-day h2.nav-item.active {
+    background: rgba(56, 189, 248, 0.15);
+    border-style: solid; color: #7dd3fc;
+  }
+  .nav-day ul { list-style: none; }
+  .nav-day li.nav-item {
+    font-size: 12px; padding: 6px 9px; border-radius: 6px;
+    color: #94a3b8; cursor: pointer; margin-bottom: 2px;
+    line-height: 1.3; transition: all .15s;
+    border-left: 2px solid transparent;
+  }
+  .nav-day li.nav-item:hover { background: #1e293b; color: #e2e8f0; }
+  .nav-day li.nav-item.active {
+    background: rgba(16, 185, 129, 0.14);
+    color: var(--accent-emerald); font-weight: 600;
+    border-left: 2px solid var(--accent-green);
+  }
+  .nav-day[data-day="2"] li.nav-item.active {
+    background: rgba(56, 189, 248, 0.14);
+    color: #7dd3fc; border-left-color: var(--accent-blue);
+  }
+
+  .sidebar-foot {
+    margin-top: 14px; padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+    font-size: 10.5px; color: #64748b; line-height: 1.7;
+  }
+  .sidebar-foot kbd {
+    background: #1e293b; border: 1px solid #334155;
+    border-radius: 4px; padding: 1px 5px;
+    font-family: inherit; font-size: 10px; color: #cbd5e1;
+  }
+
+  /* ============ ÁREA PRINCIPAL ============ */
+  .main {
+    flex: 1; display: flex; flex-direction: column;
+    position: relative; overflow: hidden; min-width: 0;
+  }
+
+  .progress {
+    position: absolute; top: 0; left: 0;
+    height: 3px; width: 0;
+    background: linear-gradient(90deg, var(--accent-green), var(--accent-blue));
+    transition: width .3s ease; z-index: 6;
+  }
+
+  .day-bar {
+    flex-shrink: 0; display: flex; align-items: center;
+    gap: 12px; padding: 13px 28px;
+    border-bottom: 1px solid var(--border-color);
+    background: linear-gradient(90deg, rgba(16,185,129,.09), transparent 70%);
+    transition: background .35s;
+  }
+  .day-bar .dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--accent-green);
+    box-shadow: 0 0 10px var(--accent-green);
+    flex-shrink: 0; transition: all .35s;
+  }
+  .day-bar h2 {
+    font-size: 15px; color: var(--accent-emerald);
+    font-weight: 700; letter-spacing: .3px; transition: color .35s;
+  }
+  .day-bar .day-sub {
+    margin-left: auto; font-size: 11.5px;
+    color: var(--text-muted); text-align: right;
+  }
+  body[data-day="2"] .day-bar {
+    background: linear-gradient(90deg, rgba(56,189,248,.09), transparent 70%);
+  }
+  body[data-day="2"] .day-bar .dot {
+    background: var(--accent-blue); box-shadow: 0 0 10px var(--accent-blue);
+  }
+  body[data-day="2"] .day-bar h2 { color: #7dd3fc; }
+
+  .menu-toggle {
+    display: none; background: #1e293b;
+    border: 1px solid var(--border-color);
+    color: var(--accent-emerald); border-radius: 8px;
+    padding: 5px 10px; font-size: 16px; cursor: pointer;
+    font-family: inherit;
+  }
+
+  .deck {
+    flex: 1; min-height: 0; display: flex;
+    align-items: stretch; justify-content: center;
+    padding: 20px 28px 78px;
+  }
+
+  .slide {
+    display: none; width: 100%; max-width: 1100px; height: 100%;
+    background: var(--bg-slide);
+    border: 1px solid var(--border-color);
+    border-radius: 18px; padding: 34px 40px;
+    overflow-y: auto;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    animation: fade .35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .slide.active { display: block; }
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(14px) scale(0.985); }
+    to   { opacity: 1; transform: none; }
+  }
+  .slide::-webkit-scrollbar { width: 6px; }
+  .slide::-webkit-scrollbar-track { background: var(--bg-slide); }
+  .slide::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+  .slide.divider {
+    text-align: center;
+    background: linear-gradient(135deg, #101726 0%, #064e3b 100%);
+    border-color: rgba(52, 211, 153, 0.35);
+  }
+  .slide.divider.active {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; overflow: hidden;
+  }
+  .slide.divider[data-day="2"] {
+    background: linear-gradient(135deg, #101726 0%, #0c3a5e 100%);
+    border-color: rgba(56, 189, 248, 0.35);
+  }
+  .slide.divider h1 {
+    font-size: 54px; margin-bottom: 12px; color: #fff;
+    text-shadow: 0 4px 14px rgba(0,0,0,.5); letter-spacing: -1px;
+  }
+  .slide.divider .sub {
+    font-size: 21px; color: var(--accent-emerald);
+    margin-bottom: 26px; font-style: italic;
+  }
+  .slide.divider[data-day="2"] .sub { color: var(--accent-blue); }
+  .slide.divider .meta {
+    font-size: 15px; color: #e2e8f0; line-height: 1.9;
+    max-width: 720px; border-top: 1px solid rgba(255,255,255,.12);
+    padding-top: 20px;
+  }
+
+  .slide-grid {
+    display: grid; grid-template-columns: 1.2fr 0.8fr;
+    gap: 30px; align-items: center; height: 100%;
+  }
+  .slide-grid.full { grid-template-columns: 1fr; }
+
+  .slide-img {
+    width: 100%; height: 240px; object-fit: cover;
+    border-radius: 12px; border: 1px solid var(--border-color);
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
+  }
+
+  .slide h2 {
+    font-size: 29px; color: var(--accent-emerald);
+    margin-bottom: 16px;
+    border-bottom: 2px solid rgba(16, 185, 129, 0.2);
+    padding-bottom: 8px; font-weight: 700;
+  }
+  body[data-day="2"] .slide h2 {
+    color: #7dd3fc; border-bottom-color: rgba(56,189,248,.2);
+  }
+
+  .slide h3 {
+    font-size: 19px; color: var(--accent-blue);
+    margin: 16px 0 8px; font-weight: 600;
+  }
+  .slide p, .slide li {
+    font-size: 16.5px; line-height: 1.6;
+    color: #cbd5e1; margin-bottom: 8px;
+  }
+  .slide ul, .slide ol { margin-left: 24px; margin-bottom: 12px; }
+  .slide li { margin-bottom: 4px; }
+  .slide strong { color: #fde047; }
+  .slide code {
+    background: #090d16; padding: 3px 8px; border-radius: 6px;
+    color: var(--accent-emerald);
+    font-family: 'Fira Code', 'Consolas', monospace;
+    font-size: 14.5px; border: 1px solid var(--border-color);
+  }
+  .sub {
+    color: var(--text-muted); font-size: 17px;
+    margin-bottom: 18px; font-style: italic;
+  }
+
+  table {
+    width: 100%; border-collapse: collapse; margin: 12px 0;
+    font-size: 14.5px; background: #0b111e;
+    border-radius: 8px; overflow: hidden;
+  }
+  th, td {
+    border: 1px solid var(--border-color);
+    padding: 8px 12px; text-align: left;
+  }
+  th { background: #064e3b; color: #a7f3d0; font-weight: 600; }
+  body[data-day="2"] th { background: #0c3a5e; color: #bae6fd; }
+  td { color: #cbd5e1; }
+
+  /* ============ CONTROLES ============ */
+  .controls {
+    position: absolute; bottom: 18px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; align-items: center; gap: 12px;
+    background: #0f172a; border: 1px solid var(--border-color);
+    padding: 9px 18px; border-radius: 30px; z-index: 5;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  }
+  .controls button {
+    background: var(--accent-green); color: #090d16;
+    border: 0; padding: 8px 18px; border-radius: 20px;
+    font-size: 13.5px; font-weight: 700; cursor: pointer;
+    font-family: inherit; transition: all .2s;
+  }
+  .controls button:hover { background: var(--accent-emerald); transform: translateY(-1px); }
+  .controls button:disabled { background: #1e293b; color: #475569; cursor: not-allowed; transform: none; }
+  body[data-day="2"] .controls button:not(:disabled):not(.info-btn) { background: var(--accent-blue); }
+  body[data-day="2"] .controls button:not(:disabled):not(.info-btn):hover { background: #7dd3fc; }
+
+  /* Botón "Más info" */
+  .info-btn {
+    background: transparent !important;
+    border: 1px solid var(--accent-blue) !important;
+    color: var(--accent-blue) !important;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .info-btn:hover {
+    background: rgba(56, 189, 248, 0.15) !important;
+    color: #7dd3fc !important;
+    transform: translateY(-1px);
+  }
+  .info-btn::before {
+    content: 'ℹ';
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 1px solid currentColor;
+    font-size: 11px; font-weight: 700; font-style: italic;
+    font-family: Georgia, serif; line-height: 1;
+  }
+
+  .controls .counter {
+    color: var(--text-muted); font-size: 13.5px;
+    min-width: 66px; text-align: center; font-weight: 600;
+  }
+
+  /* ============ PANEL DE INFORMACIÓN ============ */
+  .info-overlay {
+    position: fixed; inset: 0;
+    background: rgba(2, 6, 12, 0.65);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    opacity: 0; pointer-events: none;
+    transition: opacity .3s ease;
+    z-index: 200;
+  }
+  .info-overlay.open { opacity: 1; pointer-events: auto; }
+
+  .info-panel {
+    position: fixed; top: 0; right: 0; bottom: 0;
+    width: 440px; max-width: 92vw;
+    background: var(--bg-side);
+    border-left: 1px solid var(--border-color);
+    transform: translateX(100%);
+    transition: transform .38s cubic-bezier(.16, 1, .3, 1);
+    z-index: 201;
+    display: flex; flex-direction: column;
+    box-shadow: -20px 0 60px rgba(0,0,0,.6);
+  }
+  .info-panel.open { transform: none; }
+
+  .info-panel-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex; align-items: flex-start; gap: 14px;
+    background: linear-gradient(135deg, rgba(56,189,248,.10), transparent 70%);
+  }
+  .info-panel-header .icon {
+    flex-shrink: 0;
+    width: 38px; height: 38px; border-radius: 10px;
+    background: rgba(56, 189, 248, 0.15);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    color: var(--accent-blue);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-family: Georgia, serif; font-style: italic; font-weight: 700;
+  }
+  .info-panel-header .txt { flex: 1; min-width: 0; }
+  .info-panel-header .txt small {
+    display: block; font-size: 10.5px; letter-spacing: 1.2px;
+    text-transform: uppercase; color: var(--accent-blue);
+    font-weight: 700; margin-bottom: 3px;
+  }
+  .info-panel-header .txt h3 {
+    font-size: 16.5px; color: var(--text-main);
+    font-weight: 700; line-height: 1.3; margin: 0;
+    word-wrap: break-word;
+  }
+  .info-close {
+    flex-shrink: 0;
+    background: #1e293b; border: 1px solid var(--border-color);
+    color: #cbd5e1; width: 32px; height: 32px;
+    border-radius: 8px; cursor: pointer; font-size: 17px;
+    line-height: 1; transition: all .18s;
+    display: flex; align-items: center; justify-content: center;
+    font-family: inherit;
+  }
+  .info-close:hover {
+    background: #dc2626; border-color: #dc2626; color: #fff;
+    transform: rotate(90deg);
+  }
+
+  .info-panel-body {
+    flex: 1; overflow-y: auto;
+    padding: 20px 22px 30px;
+  }
+  .info-panel-body::-webkit-scrollbar { width: 6px; }
+  .info-panel-body::-webkit-scrollbar-track { background: transparent; }
+  .info-panel-body::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+  .info-card {
+    background: var(--bg-slide);
+    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--accent-blue);
+    border-radius: 10px;
+    padding: 14px 16px 15px;
+    margin-bottom: 14px;
+    animation: cardIn .4s cubic-bezier(.16,1,.3,1) backwards;
+  }
+  .info-card:nth-child(1) { animation-delay: .04s; }
+  .info-card:nth-child(2) { animation-delay: .10s; }
+  .info-card:nth-child(3) { animation-delay: .16s; }
+  .info-card:nth-child(4) { animation-delay: .22s; }
+  .info-card:nth-child(5) { animation-delay: .28s; }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateX(24px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .info-card h4 {
+    font-size: 12px; letter-spacing: .8px;
+    text-transform: uppercase;
+    color: var(--accent-blue);
+    margin-bottom: 8px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .info-card h4 .ico { font-size: 16px; }
+
+  .info-card p {
+    font-size: 13.5px; color: #cbd5e1;
+    line-height: 1.62; margin: 0 0 6px;
+  }
+  .info-card p:last-child { margin-bottom: 0; }
+  .info-card ul {
+    margin: 4px 0 0 18px; padding: 0;
+  }
+  .info-card li {
+    font-size: 13.5px; color: #cbd5e1;
+    line-height: 1.6; margin-bottom: 5px;
+  }
+  .info-card li:last-child { margin-bottom: 0; }
+  .info-card code {
+    background: #090d16; padding: 2px 6px; border-radius: 5px;
+    color: var(--accent-emerald);
+    font-family: 'Fira Code', 'Consolas', monospace;
+    font-size: 12.5px;
+    border: 1px solid var(--border-color);
+  }
+  .info-card strong { color: #fde047; }
+
+  /* Variantes por tipo */
+  .info-card.tip    { border-left-color: var(--accent-green); }
+  .info-card.tip    h4 { color: var(--accent-emerald); }
+
+  .info-card.fact   { border-left-color: #fde047; }
+  .info-card.fact   h4 { color: #fde047; }
+
+  .info-card.resource { border-left-color: var(--accent-blue); }
+  .info-card.resource h4 { color: var(--accent-blue); }
+
+  .info-card.warn   { border-left-color: #f97316; }
+  .info-card.warn   h4 { color: #fb923c; }
+
+  .info-card.example { border-left-color: #a78bfa; }
+  .info-card.example h4 { color: #c4b5fd; }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 980px) {
+    .sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: 290px; max-width: 85vw; z-index: 100;
+      transform: translateX(-100%);
+      transition: transform .28s cubic-bezier(.16,1,.3,1);
+      box-shadow: 12px 0 40px rgba(0,0,0,.6);
+    }
+    .sidebar.open { transform: none; }
+    .menu-toggle { display: inline-block; }
+    .deck { padding: 16px 16px 76px; }
+    .slide { padding: 24px 22px; border-radius: 14px; }
+    .slide-grid { grid-template-columns: 1fr; gap: 16px; }
+    .slide h2 { font-size: 22px; }
+    .slide p, .slide li { font-size: 15px; }
+    .slide-img { height: 170px; }
+    .slide.divider h1 { font-size: 34px; }
+    .slide.divider .sub { font-size: 16px; }
+    .slide.divider .meta { font-size: 13px; }
+    .day-bar { padding: 10px 16px; }
+    .day-bar .day-sub { display: none; }
+    .controls {
+      padding: 7px 10px; gap: 6px;
+      bottom: 12px; max-width: calc(100% - 20px);
+    }
+    .controls button { padding: 6px 10px; font-size: 11.5px; }
+    .controls .counter { font-size: 11.5px; min-width: 54px; }
+    .info-panel { width: 100%; max-width: 100%; }
+  }
+  @media (max-width: 480px) {
+    .controls button .lbl { display: none; }
+  }
+</style>
+</head>
+<body data-day="1">
+
+<div class="app">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar" id="sidebar">
+    <span class="kicker">Capacitación Corporativa</span>
+    <h1>Curso Intensivo de Excel</h1>
+    <p class="sidebar-sub">Nivel Básico Completo · Edición Moderna</p>
+
+    <div class="badges">
+      <span class="badge">2 días intensivos</span>
+      <span class="badge">9 h 40 min</span>
+      <span class="badge">Módulo IA</span>
+    </div>
+
+    <div class="info-box">
+      <p>🕗 8:30 am – 4:00 pm</p>
+      <p>🍽️ Almuerzo: 12:00 – 2:00 pm</p>
+      <p>☕ Recesos: 20 min (mañana y tarde)</p>
+      <p>🎯 60% práctica · 40% teoría</p>
+    </div>
+
+    <nav class="sidebar-nav" id="sidebarNav">
+
+      <div class="nav-day" data-day="1">
+        <h2 class="nav-item">Día 1 · Fundamentos</h2>
+        <ul>
+          <li class="nav-item">Bienvenida y metodología</li>
+          <li class="nav-item">¿Qué es Excel?</li>
+          <li class="nav-item">Ejemplo: control de gastos</li>
+          <li class="nav-item">Instalación y versiones</li>
+          <li class="nav-item">RAM y rendimiento</li>
+          <li class="nav-item">Interfaz de Excel</li>
+          <li class="nav-item">Filas, columnas y celdas</li>
+          <li class="nav-item">Ingreso y edición de datos</li>
+          <li class="nav-item">Formato de celdas</li>
+          <li class="nav-item">Práctica: factura</li>
+          <li class="nav-item">Fórmulas y operadores</li>
+          <li class="nav-item">Ejemplo: calificaciones</li>
+          <li class="nav-item">Referencias relativas / absolutas</li>
+        </ul>
+      </div>
+
+      <div class="nav-day" data-day="2">
+        <h2 class="nav-item">Día 2 · Funciones y Herramientas</h2>
+        <ul>
+          <li class="nav-item">Conteo condicional</li>
+          <li class="nav-item">Función SI lógica</li>
+          <li class="nav-item">Ordenar y filtrar</li>
+          <li class="nav-item">Tablas inteligentes</li>
+          <li class="nav-item">Errores comunes</li>
+          <li class="nav-item">Gráficos básicos</li>
+          <li class="nav-item">Introducción a macros</li>
+          <li class="nav-item">IA aplicada a Excel</li>
+          <li class="nav-item">Prompts efectivos</li>
+          <li class="nav-item">Práctica con IA</li>
+          <li class="nav-item">Datos vs Reportes</li>
+          <li class="nav-item">Esquema del libro</li>
+          <li class="nav-item">Evaluación final</li>
+          <li class="nav-item">Cierre y conclusiones</li>
+          <li class="nav-item">Anexo: atajos de teclado</li>
+          <li class="nav-item">Anexo: glosario técnico</li>
+        </ul>
+      </div>
+
+    </nav>
+
+    <div class="sidebar-foot">
+      <kbd>←</kbd> <kbd>→</kbd> navegar &nbsp;·&nbsp; <kbd>F</kbd> pantalla completa<br>
+      <kbd>I</kbd> abrir Más info &nbsp;·&nbsp; <kbd>Esc</kbd> cerrar
+    </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+
+    <div class="progress" id="progress"></div>
+
+    <header class="day-bar">
+      <button class="menu-toggle" id="menuToggle" aria-label="Menú">☰</button>
+      <span class="dot"></span>
+      <h2 id="dayTitle">Día 1 — Fundamentos y fórmulas</h2>
+      <span class="day-sub" id="daySub">Fundamentos · Interfaz · Formato · Fórmulas básicas</span>
+    </header>
+
+    <div class="deck" id="deck">
+
+      <!-- ============ DÍA 1 ============ -->
+
+      <div class="slide divider active" data-day="1">
+        <h1>Día 1</h1>
+        <p class="sub">Fundamentos, interfaz, formato y fórmulas básicas</p>
+        <div class="meta">
+          <p>Bienvenida · ¿Qué es Excel? · Instalación y rendimiento</p>
+          <p>Interfaz · Estructura de celdas · Ingreso de datos · Formato</p>
+          <p>Fórmulas básicas · Referencias relativas y absolutas</p>
+        </div>
+      </div>
+
+      <div class="slide" data-day="1">
+        <h2>1. Bienvenida</h2>
+        <p class="sub">Objetivo: Presentar el curso, los objetivos y la metodología de aprendizaje.</p>
+        <div class="slide-grid">
+          <div>
+            <h3>Metodología</h3>
+            <ul>
+              <li><strong>60% práctica</strong> · 40% teoría aplicada</li>
+              <li>Aprendizaje guiado paso a paso en pantalla</li>
+              <li>Ejercicios individuales y resolución de casos reales</li>
+            </ul>
+            <h3>Actividad de inicio</h3>
+            <p>Cada participante se presenta brevemente y responde: <strong>¿Para qué quiero dominar Excel en mi día a día?</strong></p>
+            <p style="color:var(--text-muted);margin-top:15px;font-size:15px">Duración estimada: 15 minutos</p>
+          </div>
+          <div>
+            <img class="slide-img" src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80" alt="Capacitación laboral">
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="1">
+        <h2>2. ¿Qué es Excel?</h2>
+        <div class="slide-grid">
+          <div>
+            <p>Potente aplicación de <strong>hoja de cálculo</strong> desarrollada por Microsoft. Permite estructurar datos en filas y columnas, automatizar operaciones matemáticas, generar gráficos visuales y analizar información compleja.</p>
+            <h3>¿Para qué sirve?</h3>
+            <ul>
+              <li>Contabilidad, finanzas y control de caja</li>
+              <li>Inventarios y control automatizado de stock</li>
+              <li>Presupuestos personales y corporativos</li>
+              <li>Generación de reportes dinámicos y tableros</li>
+            </ul>
+          </div>
+          <div>
+            <img class="slide-img" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="Dashboard Excel">
+            <h3>Alternativas principales</h3>
+            <p style="font-size:15px;"><strong>Google Sheets</strong> (en línea) · <strong>LibreOffice Calc</strong> (open-source) · <strong>Numbers</strong> (Apple)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="1">
+        <div class="slide-grid full">
+          <div>
+            <h2>Ejemplo práctico: Control de Gastos</h2>
+            <p>Estructura inicial para una lista de gastos mensuales con cálculo de totales automatizado:</p>
+            <table>
+              <tr><th>Fecha</th><th>Descripción</th><th>Monto ($)</th></tr>
+              <tr><td>01/10</td><td>Alquiler de oficina</td><td>200.00</td></tr>
+              <tr><td>05/10</td><td>Insumos y Comida</td><td>150.00</td></tr>
+              <tr><td>10/10</td><td>Transporte y Logística</td><td>50.00</td></tr>
+              <tr><td><strong>Total</strong></td><td></td><td><code>=SUMA(C2:C4)</code></td></tr>
+            </table>
+            <p style="color:var(--text-muted);margin-top:15px">Dinámica de clase: Lluvia de ideas sobre casos de uso reales en tu entorno laboral.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="1">
+        <h2>3. Instalación y versiones</h2>
+        <div class="slide-grid">
+          <div>
+            <h3>Versiones actuales de Excel</h3>
+            <ul>
+              <li><strong>Excel 2019 / 2021:</strong> Licencia de pago único tradicional</li>
+              <li><strong>Microsoft 365:</strong> Versión en nube por suscripción, siempre actualizada con funciones de IA</li>
+              <li><strong>Excel Online:</strong> Versión ligera y gratuita en navegador web</li>
+            </ul>
+            <h3>Requisitos mínimos recomendados</h3>
+            <ul>
+              <li>Windows 10/11 o macOS actualizados</li>
+              <li>Procesador de 1.6 GHz o superior</li>
+              <li><strong>4 GB de RAM</strong> mínimo · <strong>8 GB</strong> recomendado</li>
+            </ul>
+          </div>
+          <div>
+            <img class="slide-img" src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80" alt="Computadora y software">
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="1">
+        <h2>RAM y rendimiento en Excel</h2>
+        <div class="slide-grid">
+          <div>
+            <ul>
+              <li>Más memoria RAM permite abrir archivos pesados de manera fluida y realizar cálculos masivos sin interrupciones.</li>
+              <li>Los libros con cientos de fórmulas complejas, gráficos anidados o imágenes incrustadas consumen muchos más recursos.</li>
+            </ul>
+            <h3>Cómo verificar el consumo de memoria</h3>
+            <ol>
+              <li>Mantén abierto tu archivo de Excel.</li>
+              <li>Presiona las teclas <code>Ctrl + Shift + Esc</code> para abrir el Administrador de tareas.</li>
+              <li>Busca el proceso de Excel y revisa la columna de memoria asignada.</li>
+            </ol>
+          </div>
+          <div>
+            <img class="slide-img" src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80" alt="Rendimiento del sistema">
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="1">
+        <h2>4. Interfaz y entorno de Excel</h2>
+        <div class="slide-grid">
+          <div>
+            <h3>Componentes clave de la pantalla</h3>
+            <ul>
+              <li><strong>Cinta de opciones:</strong> Fichas Inicio, Insertar, Fórmulas, Datos, etc.</li>
+              <li><strong>Cuadro de nombres:</strong> Indica la celda seleccionada actualmente.</li>
+              <li><strong>Barra de fórmulas:</strong> Muestra el valor o fórmula real de la celda activa.</li>
+              <li><strong>Cuadrícula de celdas:</strong> El área de trabajo principal (Filas y Columnas).</li>
+              <li><strong>Barra de estado:</strong> Muestra sumas y promedios rápidos al seleccionar rangos.</li>
+            </ul>
+          </div>
+          <div>
+            <img class="slide-img" src="https://images.unsplash.com/photo-1542744094-3a31243264d0?auto=format&fit=crop&w=800&q=80" alt="Espacio de trabajo digital">
+            <p style="margin-top:15px; font-size:15px;"><strong>Atajos esenciales:</strong> <code>Ctrl + Inicio</code> (ir a A1) · <code>F2</code> (editar celda) · <code>Ctrl + Z</code> (deshacer)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="1">
+        <div class="slide-grid full">
+          <div>
+            <h2>Estructura: Filas, Columnas y Celdas</h2>
+            <ul>
+              <li><strong>Fila:</strong> Horizontal, identificada por números (1, 2, 3...).</li>
+              <li><strong>Columna:</strong> Vertical, identificada por letras (A, B, C...).</li>
+              <li><strong>Celda:</strong> Intersección única entre columna y fila (ejemplo: <code>A1</code>, <code>B2</code>).</li>
+              <li><strong>Rango:</strong> Bloque de celdas seleccionadas (ejemplo: <code>A1:C10</code>).</li>
+            </ul>
+            <h3>Ejemplo visual de una matriz</h3>
+            <table>
+              <tr><th></th><th>A</th><th>B</th><th>C</th></tr>
+              <tr><th>1</th><td>Nombre</td><td>Edad</td><td>Ciudad</td></tr>
+              <tr><th>2</th><td>Juan</td><td>25</td><td>Caracas</td></tr>
+              <tr><th>3</th><td>María</td><td>30</td><td>Valencia</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="1">
+        <h2>5. Ingreso y edición de datos</h2>
+        <div class="slide-grid">
+          <div>
+            <h3>Buenas prácticas de entrada</h3>
+            <p>Haz clic en una celda y comienza a digitar. Usa <code>Enter</code> para confirmar hacia abajo, <code>Tab</code> para avanzar a la derecha y <code>Esc</code> para anular cambios.</p>
+            <h3>Autocompletar inteligente</h3>
+            <p>Escribe un mes (ej. "Enero") o día de la semana y arrastra desde la esquina inferior derecha de la celda para que Excel complete la secuencia automáticamente.</p>
+            <h3>Herramientas de búsqueda</h3>
+            <p><code>Ctrl + B</code> para buscar datos específicos · <code>Ctrl + L</code> para buscar y reemplazar valores masivamente.</p>
+          </div>
+          <div>
+            <img class="slide-img" src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80" alt="Escribiendo código o datos">
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="1">
+        <div class="slide-grid full">
+          <div>
+            <h2>6. Formato de celdas</h2>
+            <p>Presenta tus datos de forma profesional aplicando el tipo de dato adecuado:</p>
+            <table>
+              <tr><th>Tipo de Formato</th><th>Ejemplo Visual</th></tr>
+              <tr><td>General / Estándar</td><td>1234.56</td></tr>
+              <tr><td>Número con separadores</td><td>1.234,56</td></tr>
+              <tr><td>Moneda corporativa</td><td>$ 1.234,56</td></tr>
+              <tr><td>Fecha corta / larga</td><td>09/10/2026</td></tr>
+              <tr><td>Porcentaje</td><td>25,00%</td></tr>
+            </table>
+            <p style="margin-top:15px"><strong>Cómo aplicarlo:</strong> Clic derecho en la celda seleccionada → <strong>Formato de celdas</strong> (o utiliza los accesos directos de la pestaña Inicio).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="1">
+        <div class="slide-grid full">
+          <div>
+            <h2>Práctica Aplicada: Factura Comercial</h2>
+            <table>
+              <tr><th>Producto</th><th>Precio Unitario</th><th>Cantidad</th><th>Total Calculado</th></tr>
+              <tr><td>Cuaderno profesional</td><td>$ 2,50</td><td>10</td><td>$ 25,00</td></tr>
+              <tr><td>Lápiz grafito HB</td><td>$ 1,00</td><td>20</td><td>$ 20,00</td></tr>
+              <tr><td>Borrador de nata</td><td>$ 0,75</td><td>15</td><td>$ 11,25</td></tr>
+              <tr><td><strong>Total a Pagar</strong></td><td></td><td></td><td><strong>$ 56,25</strong></td></tr>
+            </table>
+            <p style="margin-top:15px; color:var(--accent-emerald);">Instrucción: Aplica formato de moneda, bordes limpios y resalta los encabezados principales con color verde institucional.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="1">
+        <h2>7. Fórmulas y Operadores Básicos</h2>
+        <div class="slide-grid">
+          <div>
+            <p>Toda fórmula en Excel inicia obligatoriamente con el signo de igualdad <code>=</code>.</p>
+            <h3>Operadores aritméticos</h3>
+            <p><code>+</code> Suma · <code>-</code> Resta · <code>*</code> Multiplicación · <code>/</code> División · <code>^</code> Potencia</p>
+            <h3>Funciones estadísticas esenciales</h3>
+            <ul>
+              <li><code>=SUMA(Rango)</code>: Suma todos los valores numéricos.</li>
+              <li><code>=PROMEDIO(Rango)</code>: Calcula la media aritmética.</li>
+              <li><code>=MAX(Rango)</code> / <code>=MIN(Rango)</code>: Valor mayor y menor.</li>
+              <li><code>=CONTAR(Rango)</code>: Cuenta celdas con números.</li>
+            </ul>
+          </div>
+          <div>
+            <img class="slide-img" src="https://images.unsplash.com/photo-1543286386-713bdd548da4?auto=format&fit=crop&w=800&q=80" alt="Matemáticas y cálculos">
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="1">
+        <div class="slide-grid full">
+          <div>
+            <h2>Ejemplo: Control de Calificaciones</h2>
+            <table>
+              <tr><th>Alumno</th><th>Nota 1</th><th>Nota 2</th><th>Nota 3</th><th>Promedio Final</th></tr>
+              <tr><td>Juan Pérez</td><td>15</td><td>18</td><td>16</td><td><code>=PROMEDIO(B2:D2)</code></td></tr>
+              <tr><td>María Gómez</td><td>20</td><td>19</td><td>18</td><td><code>=PROMEDIO(B3:D3)</code></td></tr>
+              <tr><td>Pedro Silva</td><td>10</td><td>12</td><td>14</td><td><code>=PROMEDIO(B4:D4)</code></td></tr>
+            </table>
+            <p style="margin-top:15px">Actividad: Desarrolla una tabla para 10 estudiantes, automatiza sus promedios y obtén las notas máximas y mínimas del grupo.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="1">
+        <h2>8. Referencias Relativas y Absolutas</h2>
+        <div class="slide-grid">
+          <div>
+            <h3>Referencia Relativa <code>A1</code></h3>
+            <p>Se adapta automáticamente al copiar la fórmula de una celda a otra (ej. al bajar filas cambia de A1 a A2).</p>
+            <h3>Referencia Absoluta <code>$A$1</code></h3>
+            <p>Queda fija e inamovible al arrastrar la fórmula. Vital para factores fijos como impuestos o tasas de cambio (IVA).</p>
+            <h3>Ejemplo práctico con IVA</h3>
+            <p><code>=A2*(1+$B$1)</code> — El porcentaje de IVA guardado en <code>B1</code> se mantiene fijo para toda la columna.</p>
+          </div>
+          <div>
+            <img class="slide-img" src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=800&q=80" alt="Estrategia y análisis">
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ DÍA 2 ============ -->
+
+      <div class="slide divider" data-day="2">
+        <h1>Día 2</h1>
+        <p class="sub">Funciones avanzadas y herramientas de análisis</p>
+        <div class="meta">
+          <p>Conteo condicional · Función SI · Ordenar y filtrar · Tablas inteligentes</p>
+          <p>Control de errores · Gráficos · Macros</p>
+          <p>IA aplicada a Excel (DeepSeek) · Buenas prácticas · Evaluación final</p>
+        </div>
+      </div>
+
+      <div class="slide" data-day="2">
+        <div class="slide-grid">
+          <div>
+            <h2>9. Funciones de Conteo Condicional</h2>
+            <ul>
+              <li><code>=CONTAR(Rango)</code>: Cuenta celdas que contienen números.</li>
+              <li><code>=CONTARA(Rango)</code>: Cuenta celdas que no están vacías (texto o números).</li>
+              <li><code>=CONTAR.BLANCO(Rango)</code>: Cuenta celdas completamente vacías.</li>
+              <li><code>=CONTAR.SI(Rango; Criterio)</code>: Cuenta solo las celdas que cumplen una condición específica.</li>
+            </ul>
+            <p style="margin-top:15px">Ejemplo: <code>=CONTAR.SI(B2:B5; "Aprobado")</code> cuantifica de forma exacta los éxitos del grupo.</p>
+          </div>
+          <div>
+            <img class="slide-img" src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=800&q=80" alt="Métricas y estadísticas">
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="2">
+        <div class="slide-grid full">
+          <div>
+            <h2>10. Función SI Lógica</h2>
+            <p>Permite evaluar una condición y tomar caminos distintos según el resultado.</p>
+            <h3>Sintaxis Oficial</h3>
+            <p><code>=SI(condición; valor_si_es_verdadero; valor_si_es_falso)</code></p>
+            <table>
+              <tr><th>Alumno</th><th>Nota</th><th>Evaluación con Función SI</th></tr>
+              <tr><td>Juan</td><td>15</td><td><code>=SI(B2&gt;=10;"Aprobado";"Reprobado")</code></td></tr>
+              <tr><td>María</td><td>8</td><td><code>=SI(B3&gt;=10;"Aprobado";"Reprobado")</code></td></tr>
+              <tr><td>Pedro</td><td>12</td><td><code>=SI(B4&gt;=10;"Aprobado";"Reprobado")</code></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="2">
+        <h2>11. Ordenar y Filtrar Datos</h2>
+        <div class="slide-grid">
+          <div>
+            <h3>Ordenamiento de información</h3>
+            <p>Permite organizar tus tablas de manera ascendente (A-Z, menor a mayor) o descendente (Z-A, mayor a menor) seleccionando el rango y acudiendo a <strong>Datos → Ordenar</strong>.</p>
+            <h3>Filtros inteligentes</h3>
+            <p>Actívalos con <code>Ctrl + Shift + L</code> o desde la pestaña Datos. Te permiten ocultar filas temporalmente según criterios específicos de texto, números o color.</p>
+          </div>
+          <div>
+            <img class="slide-img" src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80" alt="Organización de datos">
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="2">
+        <div class="slide-grid">
+          <div>
+            <h2>12. Tablas Inteligentes en Excel</h2>
+            <p>Transforma un rango de datos común en una estructura inteligente mediante <strong>Insertar → Tabla</strong> (o <code>Ctrl + Q</code> / <code>Ctrl + T</code>).</p>
+            <h3>Ventajas principales</h3>
+            <ul>
+              <li>Filtros y botones desplegables automáticos en los encabezados.</li>
+              <li>Fila de totales interactiva al pie de página.</li>
+              <li>Auto-expansión al agregar nuevas filas de datos.</li>
+              <li>Fórmulas basadas en nombres de columnas en lugar de celdas estáticas.</li>
+            </ul>
+          </div>
+          <div>
+            <img class="slide-img" src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80" alt="Gestión de tablas">
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="2">
+        <div class="slide-grid full">
+          <div>
+            <h2>13. Diagnóstico de Errores Comunes</h2>
+            <table>
+              <tr><th>Indicador de Error</th><th>Significado del Error</th><th>Causa Frecuente</th></tr>
+              <tr><td>#¡DIV/0!</td><td>División entre cero</td><td>Celda divisor vacía o con valor 0</td></tr>
+              <tr><td>#¿NOMBRE?</td><td>Nombre de función no reconocido</td><td>Error tipográfico en el nombre de la fórmula</td></tr>
+              <tr><td>#¡REF!</td><td>Referencia de celda inválida</td><td>Se eliminó una celda referenciada en la fórmula</td></tr>
+              <tr><td>#¡VALOR!</td><td>Tipo de datos incorrecto</td><td>Uso de texto en operaciones matemáticas</td></tr>
+              <tr><td>#¡N/A!</td><td>Valor no disponible</td><td>Falla en búsquedas o referencias cruzadas</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="2">
+        <h2>14. Gráficos Estadísticos Básicos</h2>
+        <div class="slide-grid">
+          <div>
+            <h3>Tipos de gráficos esenciales</h3>
+            <ul>
+              <li><strong>Columnas / Barras:</strong> Ideales para comparar valores entre categorías distintas.</li>
+              <li><strong>Líneas:</strong> Perfectos para mostrar tendencias evolutivas a lo largo del tiempo.</li>
+              <li><strong>Circular (Pastel):</strong> Muestra proporciones porcentuales respecto a un 100% total.</li>
+            </ul>
+            <p style="margin-top:15px"><strong>Cómo crearlos:</strong> Selecciona tus datos → Pestaña <strong>Insertar</strong> → Elige el gráfico ideal para tu reporte.</p>
+          </div>
+          <div>
+            <img class="slide-img" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="Gráficos analíticos">
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="2">
+        <h2>15. Introducción a las Macros</h2>
+        <div class="slide-grid">
+          <div>
+            <h3>¿Qué es una macro?</h3>
+            <p>Secuencia de comandos e instrucciones grabadas que Excel ejecuta de manera automática para agilizar tareas repetitivas.</p>
+            <h3>Cómo grabar una macro básica</h3>
+            <ol>
+              <li>Ir a la pestaña <strong>Vista → Macros → Grabar macro</strong>.</li>
+              <li>Asignar un nombre descriptivo y un método abreviado.</li>
+              <li>Ejecutar los pasos y formatos que deseas automatizar.</li>
+              <li>Detener la grabación.</li>
+            </ol>
+            <p style="color:#fde047; font-size:14px; margin-top:10px;">⚠️ <em>Precaución: Nunca habilites macros de archivos descargados de internet de dudosa procedencia.</em></p>
+          </div>
+          <div>
+            <img class="slide-img" src="https://images.unsplash.com/photo-1526379095098-d400fd0bf935?auto=format&fit=crop&w=800&q=80" alt="Automatización de procesos">
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="2">
+        <h2>16. IA aplicada a Excel: DeepSeek y asistentes</h2>
+        <div class="slide-grid">
+          <div>
+            <p>Los asistentes de IA generativa (<strong>DeepSeek, ChatGPT, Copilot, Gemini</strong>) se han convertido en un <strong>copiloto</strong> para trabajar con Excel: no reemplazan tu criterio, pero aceleran enormemente el trabajo repetitivo.</p>
+            <h3>¿En qué te puede ayudar la IA?</h3>
+            <ul>
+              <li><strong>Generar fórmulas</strong> complejas a partir de una descripción en lenguaje natural.</li>
+              <li><strong>Explicar fórmulas</strong> ajenas paso a paso, incluso las más anidadas.</li>
+              <li><strong>Crear macros VBA</strong> para automatizar tareas completas.</li>
+              <li><strong>Diseñar estructuras</strong> de tablas, reportes y dashboards.</li>
+              <li><strong>Depurar errores</strong> (<code>#¡N/A!</code>, <code>#¡VALOR!</code>...) indicando causa y solución.</li>
+              <li><strong>Generar datos de prueba</strong> realistas para practicar.</li>
+            </ul>
+            <p style="color:var(--accent-emerald);margin-top:12px"><strong>DeepSeek</strong> destaca por su excelente desempeño generando código y fórmulas, con acceso gratuito desde navegador o móvil.</p>
+          </div>
+          <div>
+            <img class="slide-img" src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80" alt="Inteligencia artificial aplicada">
+            <p style="margin-top:15px;font-size:15px;color:var(--text-muted)">La IA es el <strong>copiloto</strong>; tú sigues siendo el piloto que valida y decide.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="2">
+        <div class="slide-grid full">
+          <div>
+            <h2>17. Cómo pedirle a la IA: prompts efectivos</h2>
+            <p>Un buen prompt contiene cuatro elementos: <strong>contexto + objetivo + formato + restricciones</strong>.</p>
+            <table>
+              <tr><th>❌ Prompt débil</th><th>✅ Prompt efectivo</th></tr>
+              <tr>
+                <td>"Hazme una fórmula para Excel"</td>
+                <td>"En Excel tengo la columna A con nombres y la B con notas (filas 2 a 51). Necesito una fórmula en C que devuelva 'Aprobado' si la nota es ≥ 10 y 'Reprobado' si es menor. Dame la fórmula y explica cada parte."</td>
+              </tr>
+              <tr>
+                <td>"Dame una macro"</td>
+                <td>"Necesito una macro VBA que recorra la columna A de la hoja 'Datos', elimine filas duplicadas y guarde el resultado en la hoja 'Reportes'. Incluye comentarios en español."</td>
+              </tr>
+            </table>
+            <h3>Consejos clave</h3>
+            <ul>
+              <li>Indica el <strong>rango exacto</strong> y el <strong>nombre de las hojas</strong>.</li>
+              <li>Pide que use <strong>punto y coma (;)</strong> si tu Excel está en español.</li>
+              <li>Solicita <strong>explicaciones</strong>, no solo el código: así aprendes.</li>
+              <li>Verifica siempre el resultado: <strong>la IA se equivoca</strong>.</li>
+              <li>Itera: "ahora hazlo sin BUSCARV" o "conviértelo en tabla dinámica".</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="2">
+        <h2>18. Práctica: generar una plantilla con IA</h2>
+        <div class="slide-grid">
+          <div>
+            <h3>Prompt de ejemplo</h3>
+            <p style="background:#090d16;border:1px solid var(--border-color);border-radius:8px;padding:12px;font-size:14px;color:#a7f3d0">
+              "Genera una macro VBA que cree un libro con dos hojas: 'Datos' con encabezados Fecha, Cliente, Producto, Cantidad, Precio Unitario y Total; y 'Reportes' con un resumen. Añade formato de moneda a las columnas de precio y total. Comenta el código en español."
+            </p>
+            <h3>Cómo ejecutarla</h3>
+            <ol>
+              <li>Abrir Excel y presionar <code>Alt + F11</code> (Editor de VBA).</li>
+              <li><strong>Insertar → Módulo</strong>.</li>
+              <li>Pegar el código generado por la IA.</li>
+              <li>Presionar <code>F5</code> o <strong>Ejecutar</strong>.</li>
+              <li>Guardar el archivo como <strong>.xlsm</strong> (libro habilitado para macros).</li>
+            </ol>
+            <p style="color:#fde047;font-size:14px;margin-top:10px">⚠️ Revisa siempre el código antes de ejecutarlo y nunca habilites macros de archivos desconocidos.</p>
+          </div>
+          <div>
+            <img class="slide-img" src="https://images.unsplash.com/photo-1526379095098-d400fd0bf935?auto=format&fit=crop&w=800&q=80" alt="Automatización con IA">
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="2">
+        <h2>19. Buena práctica: separar Datos y Reportes</h2>
+        <div class="slide-grid">
+          <div>
+            <p>Todo libro profesional de Excel debería organizarse en <strong>hojas especializadas</strong>, no amontonar todo en una sola.</p>
+            <h3>📋 Hoja "Datos" (o Base)</h3>
+            <ul>
+              <li>Una sola tabla plana: <strong>un registro por fila</strong>.</li>
+              <li>Encabezados únicos en la <strong>fila 1</strong>, sin celdas combinadas.</li>
+              <li>Sin filas ni columnas vacías intercaladas.</li>
+              <li>Sin colores ni adornos: es la "materia prima".</li>
+              <li>Idealmente convertida en <strong>Tabla Inteligente</strong> (<code>Ctrl + T</code>).</li>
+            </ul>
+            <h3>📊 Hoja "Reportes" (o Dashboard)</h3>
+            <ul>
+              <li>Tablas dinámicas, gráficos y fórmulas que <strong>referencian</strong> la hoja Datos.</li>
+              <li>Aquí sí se aplica formato: colores, bordes, títulos, KPIs.</li>
+              <li>Nunca se escribe a mano: todo se calcula desde Datos.</li>
+              <li>Se puede tener una hoja por reporte (Ventas, Finanzas, RRHH...).</li>
+            </ul>
+            <p style="color:var(--accent-emerald);margin-top:12px"><strong>Hoja "Parámetros" (opcional):</strong> guarda constantes como IVA, tasas de cambio o listas de validación, y referéncialas de forma absoluta (<code>$B$1</code>).</p>
+          </div>
+          <div>
+            <img class="slide-img" src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80" alt="Organización de datos">
+            <p style="margin-top:15px;font-size:15px;color:var(--text-muted)"><strong>Regla de oro:</strong> los datos se capturan una sola vez; los reportes se calculan tantas veces como haga falta.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="2">
+        <div class="slide-grid full">
+          <div>
+            <h2>20. Esquema visual del libro recomendado</h2>
+            <table>
+              <tr><th>Hoja</th><th>Contenido</th><th>Quién la alimenta</th><th>Formato</th></tr>
+              <tr><td><strong>Datos</strong></td><td>Registros crudos, un hecho por fila</td><td>Usuario / formulario / importación</td><td>Mínimo, sin combinar celdas</td></tr>
+              <tr><td><strong>Parámetros</strong></td><td>IVA, tasas, listas, catálogos</td><td>Usuario (una sola vez)</td><td>Tabla simple con nombres definidos</td></tr>
+              <tr><td><strong>Reportes</strong></td><td>Tablas dinámicas, KPIs, gráficos</td><td>Fórmulas que leen Datos</td><td>Visual y profesional</td></tr>
+            </table>
+            <h3>Flujo de la información</h3>
+            <p style="text-align:center;font-size:18px;color:var(--accent-emerald);font-weight:700;margin:20px 0">
+              Datos ➜ Fórmulas / Tablas dinámicas ➜ Reportes / Dashboard
+            </p>
+            <h3>Ventajas de esta organización</h3>
+            <ul>
+              <li>Los reportes <strong>no se rompen</strong> cuando agregas filas nuevas a los datos.</li>
+              <li>Las tablas dinámicas se actualizan con un solo clic (<strong>Actualizar</strong>).</li>
+              <li>Es mucho más fácil auditar errores: sabes exactamente dónde buscar.</li>
+              <li>Puedes pedirle a la IA cambios concretos: "modifica solo la hoja Reportes".</li>
+              <li>El archivo escala a miles de filas sin volverse inmanejable.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="2">
+        <div class="slide-grid">
+          <div>
+            <h2>21. Evaluación Final del Curso</h2>
+            <h3>Parte 1: Cuestionario Teórico</h3>
+            <ol style="font-size: 15px;">
+              <li>¿Cuál es la diferencia estructural entre fila, columna y celda?</li>
+              <li>¿Qué diferencia práctica existe entre <code>A1</code> y <code>$A$1</code>?</li>
+              <li>¿Para qué se utiliza la función condicional <code>SI</code>?</li>
+              <li>¿Qué indica exactamente el error <code>#¡DIV/0!</code>?</li>
+              <li>¿Qué ventajas aporta una tabla inteligente en Excel?</li>
+              <li>¿Por qué conviene separar los Datos de los Reportes en hojas distintas?</li>
+            </ol>
+          </div>
+          <div>
+            <h3>Parte 2: Caso Práctico Integral</h3>
+            <p style="font-size: 15px;">Diseñar un libro de trabajo completo que incluya:</p>
+            <ul style="font-size: 15px;">
+              <li>Hoja <strong>Datos</strong> con 10 alumnos, notas y promedios.</li>
+              <li>Hoja <strong>Reportes</strong> con resumen calculado desde Datos.</li>
+              <li>Uso de formato de moneda y bordes profesionales.</li>
+              <li>Evaluación de estado aprobatorio mediante función <code>SI</code>.</li>
+              <li>Gráfico analítico de columnas y filtro activo.</li>
+              <li>Apoyo de la IA para generar al menos una fórmula o macro.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="2">
+        <div class="slide-grid">
+          <div>
+            <h2>22. Cierre y Conclusiones</h2>
+            <ul>
+              <li>Resumen general de los aprendizajes clave</li>
+              <li>Espacio abierto para resolución de dudas finales</li>
+              <li>Entrega de constancias de participación</li>
+              <li>Completar encuesta de satisfacción</li>
+            </ul>
+            <h3>Recomendaciones para el éxito</h3>
+            <p style="font-size:15px;">Practica al menos 15 minutos diarios, automatiza tus propias tareas cotidianas, explora las funciones con el botón asistente <code>fx</code> y apóyate en la IA para acelerar tu aprendizaje.</p>
+          </div>
+          <div>
+            <img class="slide-img" src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80" alt="Equipo de trabajo exitoso">
+            <p style="margin-top:20px;color:var(--accent-emerald);font-size:20px;text-align:center;font-weight:700;">¡Muchas gracias por participar!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="2">
+        <div class="slide-grid full">
+          <div>
+            <h2>Anexo: Atajos Esenciales de Teclado</h2>
+            <table>
+              <tr><th>Atajos Rápidos</th><th>Acción Principal</th><th>Atajos Rápidos</th><th>Acción Principal</th></tr>
+              <tr><td><code>Ctrl + C</code></td><td>Copiar selección</td><td><code>Ctrl + B</code></td><td>Buscar texto o datos</td></tr>
+              <tr><td><code>Ctrl + V</code></td><td>Pegar contenido</td><td><code>Ctrl + L</code></td><td>Reemplazar valores</td></tr>
+              <tr><td><code>Ctrl + X</code></td><td>Cortar selección</td><td><code>Ctrl + Inicio</code></td><td>Ir directo a celda A1</td></tr>
+              <tr><td><code>Ctrl + Z</code></td><td>Deshacer acción</td><td><code>Ctrl + Shift + L</code></td><td>Activar / quitar filtros</td></tr>
+              <tr><td><code>Ctrl + Y</code></td><td>Rehacer acción</td><td><code>Alt + =</code></td><td>Autosuma rápida</td></tr>
+              <tr><td><code>F2</code></td><td>Modificar celda</td><td><code>F4</code></td><td>Fijar referencia absoluta ($)</td></tr>
+              <tr><td><code>Alt + F11</code></td><td>Abrir editor VBA</td><td><code>Ctrl + T</code></td><td>Convertir rango en Tabla</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-day="2">
+        <div class="slide-grid">
+          <div>
+            <h2>Anexo: Glosario Técnico</h2>
+            <ul style="font-size: 15px;">
+              <li><strong>Celda:</strong> Intersección básica entre una columna y una fila.</li>
+              <li><strong>Rango:</strong> Conjunto o bloque rectangular de celdas seleccionadas.</li>
+              <li><strong>Fórmula:</strong> Expresión matemática definida por el usuario.</li>
+              <li><strong>Función:</strong> Operación predefinida incorporada en Excel (ej. SUMA).</li>
+              <li><strong>Referencia absoluta:</strong> Coordenada fija que no cambia al copiarse (<code>$A$1</code>).</li>
+              <li><strong>Macro:</strong> Secuencia automatizada de instrucciones repetitivas.</li>
+              <li><strong>Filtro:</strong> Herramienta para visualizar únicamente los datos necesarios.</li>
+              <li><strong>Prompt:</strong> Instrucción en lenguaje natural que se le da a una IA.</li>
+              <li><strong>Hoja Datos:</strong> Registro crudo y estructurado, fuente de la información.</li>
+              <li><strong>Hoja Reportes:</strong> Resúmenes, KPIs y gráficos calculados desde Datos.</li>
+            </ul>
+            <p style="margin-top:20px;text-align:center;color:var(--accent-emerald);font-size:18px;font-weight:700;">Fin de la presentación</p>
+          </div>
+          <div>
+            <img class="slide-img" src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80" alt="Cierre de curso">
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /deck -->
+
+    <div class="controls">
+      <button id="btnPrev">← <span class="lbl">Anterior</span></button>
+      <button id="btnInfo" class="info-btn" aria-label="Más información"><span class="lbl">Más info</span></button>
+      <span class="counter" id="counter">1 / 31</span>
+      <button id="btnNext"><span class="lbl">Siguiente</span> →</button>
+    </div>
+
+  </main>
+</div>
+
+<!-- ============ OVERLAY + PANEL DE INFORMACIÓN ============ -->
+<div class="info-overlay" id="infoOverlay"></div>
+
+<aside class="info-panel" id="infoPanel" aria-hidden="true">
+  <header class="info-panel-header">
+    <div class="icon">i</div>
+    <div class="txt">
+      <small>Más información de interés</small>
+      <h3 id="infoTitle">—</h3>
+    </div>
+    <button class="info-close" id="infoClose" aria-label="Cerrar">×</button>
+  </header>
+  <div class="info-panel-body" id="infoBody"><!-- contenido dinámico --></div>
+</aside>
+
+<script>
+  /* =========================================================
+     NAVEGACIÓN PRINCIPAL
+     ========================================================= */
+  const slides   = Array.from(document.querySelectorAll('.slide'));
+  const navItems = Array.from(document.querySelectorAll('.nav-item'));
+  const total    = slides.length;
+  let current    = 0;
+
+  const dayInfo = {
+    '1': { title: 'Día 1 — Fundamentos y fórmulas',
+           sub: 'Fundamentos · Interfaz · Formato · Fórmulas básicas' },
+    '2': { title: 'Día 2 — Funciones y herramientas',
+           sub: 'Funciones · Tablas · Macros · IA aplicada' }
+  };
+
+  function show(n) {
+    if (n < 0) n = 0;
+    if (n >= total) n = total - 1;
+
+    slides[current].classList.remove('active');
+    slides[n].classList.add('active');
+    current = n;
+
+    navItems.forEach((it, i) => {
+      it.classList.toggle('active', i === n);
+      if (i === n) it.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    });
+
+    const day  = slides[n].dataset.day || '1';
+    const info = dayInfo[day];
+    document.getElementById('dayTitle').textContent = info.title;
+    document.getElementById('daySub').textContent   = info.sub;
+    document.body.dataset.day = day;
+
+    document.getElementById('counter').textContent  = (current + 1) + ' / ' + total;
+    document.getElementById('btnPrev').disabled     = current === 0;
+    document.getElementById('btnNext').disabled     = current === total - 1;
+    document.getElementById('progress').style.width = ((current + 1) / total * 100) + '%';
+
+    slides[current].scrollTop = 0;
+  }
+
+  const next = () => show(current + 1);
+  const prev = () => show(current - 1);
+
+  navItems.forEach((it, i) => {
+    it.addEventListener('click', () => {
+      show(i);
+      document.getElementById('sidebar').classList.remove('open');
+    });
+  });
+
+  document.getElementById('menuToggle').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+  });
+
+  /* =========================================================
+     BASE DE CONOCIMIENTO — CONTENIDO EXTRA POR DIAPOSITIVA
+     ========================================================= */
+  const INFO = {
+    0: {
+      title: 'Día 1 — Panorama general',
+      cards: [
+        { type:'tip', icon:'🎯', title:'Cómo aprovechar el Día 1',
+          html:'Al finalizar el Día 1 deberías poder <strong>crear un libro desde cero</strong>, escribir datos, aplicar formato profesional y calcular totales con fórmulas básicas. Si algo no queda claro, practica inmediatamente: la memoria muscular es clave en Excel.' },
+        { type:'fact', icon:'⚡', title:'Dato histórico',
+          html:'Excel fue lanzado en <strong>1985</strong> para Macintosh. Su nombre proviene del inglés <em>excel</em> (sobresalir), en clara alusión a sus competidores de la época como Lotus 1-2-3. En 1987 llegó la versión para Windows.' },
+        { type:'resource', icon:'📚', title:'Recursos de práctica',
+          html:'Descarga libros de práctica gratuitos desde <em>Microsoft Learn</em> o crea tu propio archivo de prueba. Practicar 15 minutos diarios durante una semana supera a 3 horas seguidas sin repaso.' }
+      ]
+    },
+    1: {
+      title: '1. Bienvenida y metodología',
+      cards: [
+        { type:'tip', icon:'💡', title:'Regla de oro del aprendizaje',
+          html:'<strong>Practica cada concepto inmediatamente después de verlo.</strong> Si solo escuchas y no ejecutas, retienes ~10%. Si aplicas lo visto, retienes hasta 75%.' },
+        { type:'fact', icon:'⚡', title:'Dato curioso',
+          html:'En entrevistas laborales, "<em>Excel intermedio/avanzado</em>" suele ser el requisito más solicitado en áreas administrativas, contables y de análisis. Es la habilidad #1 más rentable en ofimática.' },
+        { type:'resource', icon:'📚', title:'Herramienta útil',
+          html:'Lleva un <strong>archivo personal "Bitácora.xlsx"</strong> donde anotes cada truco aprendido. Al final del curso tendrás tu propio manual.' },
+        { type:'warn', icon:'⚠️', title:'Actividad obligatoria',
+          html:'Presentarse y responder a la pregunta inicial rompe el hielo y permite al instructor adaptar los ejemplos a casos reales del grupo.' }
+      ]
+    },
+    2: {
+      title: '2. ¿Qué es Excel?',
+      cards: [
+        { type:'fact', icon:'⚡', title:'Dato curioso',
+          html:'Una hoja de Excel moderna tiene <strong>16 384 columnas y 1 048 576 filas</strong>. Es decir, más de 17 mil millones de celdas posibles en una sola hoja.' },
+        { type:'tip', icon:'💡', title:'Cuándo NO usar Excel',
+          html:'Para bases de datos relacionales muy grandes (>1 millón de filas), trabajo multiusuario simultáneo o cuando necesites integridad referencial estricta, es mejor usar <strong>Access, SQL o Power BI</strong>.' },
+        { type:'resource', icon:'📚', title:'Herramientas alternativas',
+          html:'<ul><li><strong>Google Sheets</strong>: colaboración en tiempo real, gratuito.</li><li><strong>LibreOffice Calc</strong>: libre y compatible con .xlsx.</li><li><strong>Apple Numbers</strong>: enfocado al diseño.</li></ul>' },
+        { type:'example', icon:'🔎', title:'Ejemplo real',
+          html:'Un pequeño comercio puede gestionar todo su inventario, ventas diarias, control de caja y reportes mensuales en un único libro de Excel bien estructurado.' }
+      ]
+    },
+    3: {
+      title: 'Ejemplo práctico: Control de gastos',
+      cards: [
+        { type:'tip', icon:'💡', title:'Buena práctica',
+          html:'Nunca escribas el total "a mano". Usa <code>=SUMA(rango)</code>. Si agregas una fila en medio, la fórmula se ajusta automáticamente.' },
+        { type:'example', icon:'🔎', title:'Mejora progresiva',
+          html:'Añade columnas de <strong>Categoría</strong> y <strong>Método de pago</strong>, y al final usa <code>=SUMAR.SI()</code> para calcular subtotales por categoría.' },
+        { type:'warn', icon:'⚠️', title:'Error frecuente',
+          html:'No incluyas la fila del total dentro del rango de SUMA si la fórmula está en esa misma fila: obtendrás un <strong>error circular</strong>.' }
+      ]
+    },
+    4: {
+      title: '3. Instalación y versiones',
+      cards: [
+        { type:'tip', icon:'💡', title:'¿Qué versión elegir?',
+          html:'Si puedes, usa <strong>Microsoft 365</strong>: incluye funciones modernas como <code>BUSCARX</code>, <code>FILTRAR</code>, <code>UNICOS</code> y <code>ORDENAR</code> que no existen en versiones antiguas.' },
+        { type:'fact', icon:'⚡', title:'Dato curioso',
+          html:'Excel Online (versión navegador) es <strong>gratuito</strong> con una cuenta Microsoft, y permite abrir archivos sin instalar nada.' },
+        { type:'warn', icon:'⚠️', title:'Compatibilidad',
+          html:'Los archivos <code>.xlsx</code> abiertos en versiones antiguas pueden perder funciones modernas. Si compartes con usuarios de Excel 2010 o anterior, guarda como <code>.xls</code>.' }
+      ]
+    },
+    5: {
+      title: 'RAM y rendimiento',
+      cards: [
+        { type:'tip', icon:'💡', title:'Optimiza tus libros pesados',
+          html:'<ul><li>Evita <strong>referencias a libros cerrados</strong>.</li><li>Reemplaza fórmulas volátiles como <code>HOY()</code>, <code>AHORA()</code>, <code>INDIRECTO()</code> cuando no sean imprescindibles.</li><li>Convierte rangos en <strong>Tablas</strong> para que Excel calcule por columnas completas.</li></ul>' },
+        { type:'fact', icon:'⚡', title:'Curiosidad técnica',
+          html:'Excel de 64 bits puede usar <strong>toda la RAM del sistema</strong>; el de 32 bits está limitado a ~2 GB por proceso. En archivos grandes, la diferencia es abismal.' },
+        { type:'warn', icon:'⚠️', title:'Síntoma de falta de RAM',
+          html:'Si Excel se queda "en blanco" pensando tras cada clic, o muestra "<em>No responde</em>" constante, revisa el Administrador de tareas: probablemente estás al límite.' }
+      ]
+    },
+    6: {
+      title: '4. Interfaz y entorno',
+      cards: [
+        { type:'tip', icon:'💡', title:'Personaliza la cinta',
+          html:'Puedes ocultar la cinta con <code>Ctrl + F1</code> para ganar espacio en pantalla. Para crear tu propia pestaña: <strong>Archivo → Opciones → Personalizar cinta</strong>.' },
+        { type:'fact', icon:'⚡', title:'Dato curioso',
+          html:'La <strong>barra de estado</strong> (abajo) muestra suma, promedio y conteo en tiempo real al seleccionar varios números. Muchos usuarios la ignoran por completo.' },
+        { type:'example', icon:'🔎', title:'Truco poco conocido',
+          html:'Haz <strong>clic derecho sobre la barra de estado</strong> para elegir qué métricas mostrar: suma, promedio, mínimo, máximo, conteo numérico, etc.' }
+      ]
+    },
+    7: {
+      title: 'Estructura: filas, columnas, celdas',
+      cards: [
+        { type:'tip', icon:'💡', title:'Navegación rápida',
+          html:'<ul><li><code>Ctrl + Flecha</code>: salta al extremo de los datos.</li><li><code>Ctrl + Inicio</code>: va a A1.</li><li><code>Ctrl + Fin</code>: va a la última celda usada.</li><li><code>F5</code>: abre el cuadro "Ir a" para escribir coordenadas exactas.</li></ul>' },
+        { type:'fact', icon:'⚡', title:'Sabías que…',
+          html:'Una <strong>referencia 3D</strong> combina varias hojas: <code>=SUMA(Enero:Marzo!B2)</code> suma B2 de todas las hojas entre Enero y Marzo.' },
+        { type:'example', icon:'🔎', title:'Ejemplo',
+          html:'Seleccionar <code>A1:C10</code> y pulsar <code>Ctrl + T</code> convierte ese rango en una <strong>Tabla Inteligente</strong> con filtros y nombre propio.' }
+      ]
+    },
+    8: {
+      title: '5. Ingreso y edición de datos',
+      cards: [
+        { type:'tip', icon:'💡', title:'Trucos al digitar',
+          html:'<ul><li><code>Ctrl + Enter</code>: escribe el mismo valor en todas las celdas seleccionadas.</li><li><code>Alt + Enter</code>: salto de línea dentro de una misma celda.</li><li><code>F4</code> durante la edición: alterna referencias relativas/absolutas.</li></ul>' },
+        { type:'fact', icon:'⚡', title:'Dato curioso',
+          html:'Excel detecta automáticamente <strong>series</strong>: escribe "Enero", arrastra y completa todos los meses. También funciona con días, fechas, números pares, etc.' },
+        { type:'warn', icon:'⚠️', title:'Ojo con los códigos',
+          html:'Números largos como cédulas o códigos postales con ceros iniciales (ej. <code>01234</code>) deben formatearse como <strong>texto</strong>, o Excel eliminará el cero.' }
+      ]
+    },
+    9: {
+      title: '6. Formato de celdas',
+      cards: [
+        { type:'tip', icon:'💡', title:'Atajo clave',
+          html:'<code>Ctrl + 1</code> abre directamente el cuadro <strong>Formato de celdas</strong>. Es el atajo más rentable que aprenderás en Excel.' },
+        { type:'example', icon:'🔎', title:'Formato personalizado',
+          html:'Puedes crear formatos propios con códigos. Ejemplo: <code>#.##0,00 "USD"</code> muestra <em>1.234,56 USD</em>. Los tres campos separados por <code>;</code> controlan positivos;negativos;ceros.' },
+        { type:'fact', icon:'⚡', title:'Dato curioso',
+          html:'El formato <strong>NO cambia el valor</strong> de la celda. Un <em>25%</em> sigue siendo <code>0,25</code> por dentro. Esto es clave al hacer cálculos.' }
+      ]
+    },
+    10: {
+      title: 'Práctica: Factura comercial',
+      cards: [
+        { type:'tip', icon:'💡', title:'Buenas prácticas de facturas',
+          html:'<ul><li>Usa <strong>Tabla Inteligente</strong> para que la fila de totales se calcule sola.</li><li>Resalta en negrita encabezados y totales.</li><li>Congela la fila de encabezados: <strong>Vista → Inmovilizar filas superiores</strong>.</li></ul>' },
+        { type:'example', icon:'🔎', title:'Fórmula clave',
+          html:'Total = Precio × Cantidad. En Excel: <code>=B2*C2</code>. El total general es <code>=SUMA(D2:D4)</code>.' },
+        { type:'resource', icon:'📚', title:'Plantillas gratuitas',
+          html:'Microsoft ofrece plantillas de facturas, presupuestos y controles de gastos en <strong>office.com/templates</strong>. Úsalas como punto de partida.' }
+      ]
+    },
+    11: {
+      title: '7. Fórmulas y operadores básicos',
+      cards: [
+        { type:'tip', icon:'💡', title:'Orden de operaciones',
+          html:'Excel respeta el orden matemático: primero <strong>^</strong>, luego <strong>* /</strong>, después <strong>+ -</strong>. Usa paréntesis para forzar otro orden: <code>=(A1+B1)/2</code>.' },
+        { type:'fact', icon:'⚡', title:'Autosuma rápida',
+          html:'Selecciona el rango y pulsa <code>Alt + =</code>. Excel inserta una <code>SUMA()</code> automática en la celda inferior o lateral más probable.' },
+        { type:'example', icon:'🔎', title:'Funciones estadísticas',
+          html:'<ul><li><code>CONTAR()</code> cuenta solo números.</li><li><code>CONTARA()</code> cuenta cualquier celda no vacía.</li><li><code>CONTAR.BLANCO()</code> cuenta vacías.</li></ul>' }
+      ]
+    },
+    12: {
+      title: 'Ejemplo: Control de calificaciones',
+      cards: [
+        { type:'tip', icon:'💡', title:'Fórmula arrastrable',
+          html:'Escribe <code>=PROMEDIO(B2:D2)</code> en E2 y arrastra hacia abajo. Excel ajustará automáticamente las filas. <strong>Nunca reescribas una fórmula que puede arrastrarse.</strong>' },
+        { type:'example', icon:'🔎', title:'Funciones extra',
+          html:'<ul><li><code>=MEDIANA(rango)</code>: valor central.</li><li><code>=MODA.UNO(rango)</code>: valor más repetido.</li><li><code>=DESVEST.M(rango)</code>: desviación estándar.</li></ul>' },
+        { type:'fact', icon:'⚡', title:'Dato curioso',
+          html:'La barra de estado, al seleccionar varias notas, muestra al instante el <strong>promedio</strong> sin necesidad de escribir ninguna fórmula.' }
+      ]
+    },
+    13: {
+      title: '8. Referencias relativas y absolutas',
+      cards: [
+        { type:'tip', icon:'💡', title:'Atajo imprescindible',
+          html:'Mientras escribes o editas una fórmula, pulsa <strong>F4</strong> sobre una referencia para alternar entre: <code>A1</code> → <code>$A$1</code> → <code>A$1</code> → <code>$A1</code>.' },
+        { type:'example', icon:'🔎', title:'Los 3 tipos',
+          html:'<ul><li><strong>Relativa</strong> <code>A1</code>: cambia fila y columna.</li><li><strong>Absoluta</strong> <code>$A$1</code>: fija fila y columna.</li><li><strong>Mixta</strong> <code>$A1</code> o <code>A$1</code>: fija solo una parte.</li></ul>' },
+        { type:'warn', icon:'⚠️', title:'Error típico',
+          html:'Olvidar el <code>$</code> al calcular IVA o descuentos hace que el resultado se rompa al arrastrar hacia abajo. <strong>Si un factor es fijo, blíndalo con F4.</strong>' }
+      ]
+    },
+    14: {
+      title: 'Día 2 — Panorama general',
+      cards: [
+        { type:'tip', icon:'🎯', title:'Cómo aprovechar el Día 2',
+          html:'El Día 2 es más analítico. Al terminar deberías poder <strong>filtrar, contar condicionalmente, aplicar SI, crear tablas, generar gráficos, grabar macros y usar IA</strong> como apoyo.' },
+        { type:'fact', icon:'⚡', title:'Dato curioso',
+          html:'La función <code>SI</code> es la más usada de Excel después de <code>SUMA</code>. Aparece en millones de fórmulas de todo el mundo cada día.' },
+        { type:'resource', icon:'📚', title:'Recomendación',
+          html:'Ten a mano un archivo de práctica del Día 1 para reutilizarlo: agregaremos conteos, filtros y reportes sobre esa misma base.' }
+      ]
+    },
+    15: {
+      title: '9. Funciones de conteo condicional',
+      cards: [
+        { type:'tip', icon:'💡', title:'Versión con múltiples criterios',
+          html:'En versiones modernas existe <code>=CONTAR.SI.CONJUNTO(rango1; crit1; rango2; crit2)</code> para contar cuando se cumplen <strong>varias condiciones</strong> al mismo tiempo.' },
+        { type:'example', icon:'🔎', title:'Ejemplo',
+          html:'<code>=CONTAR.SI.CONJUNTO(A2:A100; "Ventas"; C2:C100; "&gt;1000")</code> cuenta todas las ventas superiores a 1000.' },
+        { type:'warn', icon:'⚠️', title:'Cuidado con el criterio',
+          html:'Los criterios de texto deben ir <strong>entre comillas</strong>: <code>"Aprobado"</code>. Los operadores también: <code>"&gt;10"</code>, <code>"&lt;=5"</code>.' }
+      ]
+    },
+    16: {
+      title: '10. Función SI lógica',
+      cards: [
+        { type:'tip', icon:'💡', title:'SI anidado vs SI.CONJUNTO',
+          html:'Para muchas condiciones, en lugar de anidar varios <code>SI()</code>, usa <code>SI.CONJUNTO()</code> (más legible) o <code>BUSCARV()</code> con una tabla de rangos.' },
+        { type:'example', icon:'🔎', title:'Ejemplo de SI anidado',
+          html:'<code>=SI(A1&gt;=18; "Mayor"; SI(A1&gt;=13; "Adolescente"; "Niño"))</code>' },
+        { type:'warn', icon:'⚠️', title:'Error frecuente',
+          html:'No olvides los <strong>punto y coma</strong> entre argumentos (en Excel configurado en español). En inglés son comas.' },
+        { type:'resource', icon:'📚', title:'Combinación potente',
+          html:'SI + Y/O amplifican las condiciones: <code>=SI(Y(A1&gt;10; B1="Sí"); "OK"; "No")</code>.' }
+      ]
+    },
+    17: {
+      title: '11. Ordenar y filtrar',
+      cards: [
+        { type:'tip', icon:'💡', title:'Atajo para filtrar',
+          html:'<code>Ctrl + Shift + L</code> activa o quita los filtros del rango o tabla seleccionada al instante.' },
+        { type:'example', icon:'🔎', title:'Filtros avanzados',
+          html:'Puedes filtrar por <strong>color de celda</strong>, <strong>color de fuente</strong> o <strong>iconos</strong> (formato condicional). Muy útil en informes visuales.' },
+        { type:'fact', icon:'⚡', title:'Dato curioso',
+          html:'Al ordenar por varias columnas, Excel usa el orden de izquierda a derecha como prioridad. Puedes cambiar la jerarquía desde <strong>Datos → Ordenar → Agregar nivel</strong>.' }
+      ]
+    },
+    18: {
+      title: '12. Tablas inteligentes',
+      cards: [
+        { type:'tip', icon:'💡', title:'Referencias estructuradas',
+          html:'Al nombrar una tabla "Ventas", puedes escribir fórmulas como <code>=SUMA(Ventas[Importe])</code>. Es más claro que un rango A2:A500.' },
+        { type:'example', icon:'🔎', title:'Ejemplo',
+          html:'Si tienes una tabla llamada <code>Alumnos</code>, <code>=PROMEDIO(Alumnos[Nota])</code> calcula el promedio sin importar cuántas filas agregues.' },
+        { type:'fact', icon:'⚡', title:'Dato curioso',
+          html:'Las tablas inteligentes fueron introducidas en <strong>Excel 2007</strong>. Muchos usuarios avanzados no las usan todavía, perdiendo tiempo y cometiendo errores.' },
+        { type:'warn', icon:'⚠️', title:'Cuidado',
+          html:'Si copias una tabla a otra hoja, el nombre y las referencias estructuradas se duplican con numeración automática. Renombra siempre para evitar confusión.' }
+      ]
+    },
+    19: {
+      title: '13. Diagnóstico de errores',
+      cards: [
+        { type:'tip', icon:'💡', title:'Envuelve errores con SI.ERROR',
+          html:'<code>=SI.ERROR(A1/B1; 0)</code> devuelve 0 cuando hay error en lugar de mostrar <code>#¡DIV/0!</code>. Muy útil en tableros.' },
+        { type:'example', icon:'🔎', title:'Rastrear errores',
+          html:'Pestaña <strong>Fórmulas → Auditoría de fórmulas → Rastrear precedentes / dependientes</strong>. Muestra gráficamente las celdas que alimentan una fórmula.' },
+        { type:'fact', icon:'⚡', title:'Dato curioso',
+          html:'El error <code>#¡N/A!</code> casi siempre aparece al usar <code>BUSCARV</code> cuando el valor buscado no existe. Se evita con <code>SI.ERROR()</code> o <code>SI.NOD()</code>.' }
+      ]
+    },
+    20: {
+      title: '14. Gráficos estadísticos',
+      cards: [
+        { type:'tip', icon:'💡', title:'Cómo elegir el gráfico correcto',
+          html:'<ul><li><strong>Comparar</strong>: columnas o barras.</li><li><strong>Evolución en el tiempo</strong>: líneas.</li><li><strong>Proporciones</strong>: circular (máx. 5–6 categorías).</li><li><strong>Correlación</strong>: dispersión.</li></ul>' },
+        { type:'example', icon:'🔎', title:'Atajo útil',
+          html:'Selecciona los datos y pulsa <code>Alt + F1</code>: crea un gráfico incrustado en la misma hoja en un segundo.' },
+        { type:'fact', icon:'⚡', title:'Dato curioso',
+          html:'Un <strong>minigráfico</strong> (sparkline) cabe dentro de una celda y muestra tendencias sin ocupar espacio. Se activa desde <strong>Insertar → Minigráfico</strong>.' }
+      ]
+    },
+    21: {
+      title: '15. Introducción a las macros',
+      cards: [
+        { type:'tip', icon:'💡', title:'Buenas prácticas',
+          html:'<ul><li>Graba en <strong>Libro Personal de Macros</strong> si quieres usarla en cualquier archivo.</li><li>Asigna atajos con <code>Ctrl + Shift + letra</code> para no chocar con los existentes.</li><li>Nombra las macros con verbos en infinitivo (Filtrar, Exportar, Formatear).</li></ul>' },
+        { type:'warn', icon:'⚠️', title:'Seguridad',
+          html:'Al abrir un archivo con macros, Excel muestra una <strong>advertencia de seguridad</strong>. Nunca habilites macros de fuentes desconocidas: pueden ejecutar código malicioso.' },
+        { type:'fact', icon:'⚡', title:'Dato curioso',
+          html:'Bajo las macros vive <strong>VBA</strong> (Visual Basic for Applications), un lenguaje que también controla Word, PowerPoint y Access.' }
+      ]
+    },
+    22: {
+      title: '16. IA aplicada a Excel',
+      cards: [
+        { type:'tip', icon:'💡', title:'Flujo ideal con IA',
+          html:'1) Describe tu problema. 2) Pide la fórmula/macro y una explicación. 3) Pega, prueba con datos pequeños. 4) Valida el resultado. 5) Solo entonces aplícalo a datos reales.' },
+        { type:'fact', icon:'⚡', title:'Dato curioso',
+          html:'<strong>DeepSeek</strong> ha demostrado excelente desempeño generando fórmulas complejas y código VBA. Es especialmente bueno explicando el "por qué" de cada parte.' },
+        { type:'warn', icon:'⚠️', title:'Precaución',
+          html:'La IA puede <strong>inventar funciones que no existen</strong> o cometer errores de sintaxis. Nunca confíes ciegamente: verifica siempre con datos de prueba.' },
+        { type:'resource', icon:'📚', title:'Otros asistentes',
+          html:'<ul><li><strong>Microsoft Copilot</strong>: integrado en Excel 365.</li><li><strong>ChatGPT</strong>: muy bueno explicando conceptos.</li><li><strong>Gemini</strong>: integración con Google Sheets.</li></ul>' }
+      ]
+    },
+    23: {
+      title: '17. Prompts efectivos',
+      cards: [
+        { type:'tip', icon:'💡', title:'Estructura del prompt perfecto',
+          html:'<ul><li><strong>Contexto</strong>: qué tienes (columnas, hojas).</li><li><strong>Objetivo</strong>: qué necesitas.</li><li><strong>Formato</strong>: cómo lo quieres (fórmula, macro, pasos).</li><li><strong>Restricciones</strong>: idioma, versión, no usar X función.</li></ul>' },
+        { type:'example', icon:'🔎', title:'Iteración',
+          html:'Si el primer resultado no es óptimo, no reescribas todo: pide mejoras concretas. "<em>Ahora hazlo sin BUSCARV</em>", "<em>Añade validación de errores</em>", "<em>Comenta cada línea</em>".' },
+        { type:'warn', icon:'⚠️', title:'Nunca incluyas',
+          html:'Datos personales, contraseñas, información financiera confidencial o contenido propietario de tu empresa.' }
+      ]
+    },
+    24: {
+      title: '18. Práctica con IA',
+      cards: [
+        { type:'tip', icon:'💡', title:'Antes de ejecutar la macro',
+          html:'<ul><li>Lee cada línea del código generado.</li><li>Prueba primero en un <strong>libro nuevo vacío</strong>.</li><li>Guarda siempre una copia de seguridad antes de usar sobre datos reales.</li></ul>' },
+        { type:'warn', icon:'⚠️', title:'Formato de archivo',
+          html:'Los libros con macros deben guardarse como <strong>.xlsm</strong>. Si los guardas como .xlsx perderás todo el código VBA.' },
+        { type:'example', icon:'🔎', title:'Prompt avanzado',
+          html:'"<em>Genera una macro VBA que recorra la columna A de la hoja \'Datos\', elimine filas duplicadas, guarde el resultado en \'Reportes\' y aplique bordes finos a toda la tabla resultante. Comenta el código en español.</em>"' }
+      ]
+    },
+    25: {
+      title: '19. Datos vs Reportes',
+      cards: [
+        { type:'tip', icon:'💡', title:'Regla de oro',
+          html:'<strong>Los datos se capturan una sola vez; los reportes se calculan tantas veces como haga falta.</strong> Esta separación evita duplicar información y errores de sincronización.' },
+        { type:'example', icon:'🔎', title:'Ejemplos de hojas Parámetros',
+          html:'<ul><li>Lista de IVA / impuestos.</li><li>Tasas de cambio de moneda.</li><li>Catálogo de productos o clientes.</li><li>Listas de validación para formularios.</li></ul>' },
+        { type:'fact', icon:'⚡', title:'Dato curioso',
+          html:'Los libros mejor estructurados casi siempre tienen <strong>muchas hojas pequeñas y especializadas</strong> en lugar de una hoja gigante con todo mezclado.' }
+      ]
+    },
+    26: {
+      title: '20. Esquema visual del libro',
+      cards: [
+        { type:'tip', icon:'💡', title:'Convención de nombres',
+          html:'Nombra las hojas sin espacios ni acentos cuando las referencies desde fórmulas: <code>Datos</code>, <code>Parametros</code>, <code>Reportes_Mensuales</code>.' },
+        { type:'example', icon:'🔎', title:'Caso escalable',
+          html:'Un libro de ventas puede tener: <code>Datos</code> (registro crudo), <code>Clientes</code>, <code>Productos</code>, <code>Parametros</code>, y varias hojas <code>Reporte_Ventas</code>, <code>Reporte_Margen</code>, <code>Dashboard</code>.' },
+        { type:'resource', icon:'📚', title:'Ruta profesional',
+          html:'Cuando el volumen crezca, migrar este esquema a <strong>Power Query + Power Pivot</strong> permite manejar millones de filas manteniendo la misma filosofía.' }
+      ]
+    },
+    27: {
+      title: '21. Evaluación final',
+      cards: [
+        { type:'tip', icon:'💡', title:'Prepárate bien',
+          html:'Repasa los atajos <code>F4</code>, <code>Ctrl+1</code>, <code>Ctrl+T</code>, <code>Alt+=</code> y la diferencia entre <code>A1</code> y <code>$A$1</code>. Suelen ser preguntas obligadas.' },
+        { type:'example', icon:'🔎', title:'Sugerencia para el caso práctico',
+          html:'Construye primero la estructura (hojas, encabezados), luego las fórmulas, después el formato, y al final el gráfico. Así evitas rehacer trabajo.' },
+        { type:'fact', icon:'⚡', title:'Dato motivador',
+          html:'Dominar el 20% de Excel (SUMA, SI, BUSCARV, tablas, filtros y gráficos) cubre el <strong>80% de las necesidades</strong> del trabajo de oficina diario.' }
+      ]
+    },
+    28: {
+      title: '22. Cierre y conclusiones',
+      cards: [
+        { type:'tip', icon:'💡', title:'Rutina de práctica recomendada',
+          html:'<ul><li>15 min diarios es mejor que 3 horas una vez al mes.</li><li>Automatiza una tarea real de tu trabajo cada semana.</li><li>Documenta tus fórmulas: te las agradecerás en 6 meses.</li></ul>' },
+        { type:'resource', icon:'📚', title:'Siguientes pasos',
+          html:'<ul><li>Curso intermedio: BUSCARV/BUSCARX, tablas dinámicas, formato condicional.</li><li>Curso avanzado: Power Query, Power Pivot, DAX, macros VBA.</li><li>Especialización: Power BI para dashboards profesionales.</li></ul>' },
+        { type:'fact', icon:'⚡', title:'Frase para recordar',
+          html:'"<em>Excel no es una calculadora; es un lenguaje para pensar con datos.</em>"' }
+      ]
+    },
+    29: {
+      title: 'Anexo: Atajos de teclado',
+      cards: [
+        { type:'tip', icon:'💡', title:'Los 5 imprescindibles',
+          html:'<ul><li><code>Ctrl + Flechas</code>: moverte a los bordes de los datos.</li><li><code>Ctrl + Shift + Flechas</code>: seleccionar todo el rango.</li><li><code>Ctrl + +</code> / <code>Ctrl + -</code>: insertar / eliminar filas o celdas.</li><li><code>Ctrl + ;</code>: insertar la fecha actual.</li><li><code>Ctrl + Shift + ;</code>: insertar la hora actual.</li></ul>' },
+        { type:'example', icon:'🔎', title:'Selección sin mouse',
+          html:'<ul><li><code>Ctrl + Espacio</code>: selecciona la columna completa.</li><li><code>Shift + Espacio</code>: selecciona la fila completa.</li><li><code>Ctrl + A</code>: selecciona toda la hoja o el rango adyacente.</li></ul>' },
+        { type:'resource', icon:'📚', title:'¿Quieres más?',
+          html:'Pulsa <code>Alt</code> y verás letras en la cinta de opciones. Son atajos de teclado secuenciales: puedes operar Excel <strong>sin usar el ratón</strong>.' }
+      ]
+    },
+    30: {
+      title: 'Anexo: Glosario y recursos',
+      cards: [
+        { type:'resource', icon:'📚', title:'Sitios recomendados',
+          html:'<ul><li><strong>support.microsoft.com/excel</strong>: ayuda oficial.</li><li><strong>exceljet.net</strong>: funciones explicadas con ejemplos.</li><li><strong>chandoo.org</strong>: trucos y plantillas.</li><li><strong>YouTube</strong>: canales como <em>Excel es Fácil</em>, <em>Ninja del Excel</em>.</li></ul>' },
+        { type:'tip', icon:'💡', title:'Cómo seguir aprendiendo',
+          html:'Suscríbete a un boletín semanal de Excel. Cada semana un truco nuevo = 52 trucos al año. En 3 años dominarás Excel a nivel experto.' },
+        { type:'fact', icon:'⚡', title:'Dato final',
+          html:'Una persona promedio pasa <strong>más de 1 000 horas al año</strong> usando Excel en trabajos administrativos. Cada truco que aprendes se multiplica por miles de horas futuras.' }
+      ]
+    }
+  };
+
+  /* =========================================================
+     LÓGICA DEL PANEL DE INFORMACIÓN
+     ========================================================= */
+  const infoPanel   = document.getElementById('infoPanel');
+  const infoOverlay = document.getElementById('infoOverlay');
+  const infoTitle   = document.getElementById('infoTitle');
+  const infoBody    = document.getElementById('infoBody');
+  const infoClose   = document.getElementById('infoClose');
+  const btnInfo     = document.getElementById('btnInfo');
+
+  function renderInfo(idx) {
+    const data = INFO[idx];
+    if (!data) {
+      infoTitle.textContent = 'Sin información adicional';
+      infoBody.innerHTML = '<div class="info-card"><h4>ℹ Sin contenido</h4><p>Esta diapositiva no tiene información extra registrada.</p></div>';
+      return;
+    }
+    infoTitle.textContent = data.title;
+    infoBody.innerHTML = data.cards.map(c => `
+      <div class="info-card ${c.type || ''}">
+        <h4><span class="ico">${c.icon || '•'}</span> ${c.title}</h4>
+        <p>${c.html}</p>
+      </div>
+    `).join('');
+    infoBody.scrollTop = 0;
+  }
+
+  function openInfo() {
+    renderInfo(current);
+    infoPanel.classList.add('open');
+    infoOverlay.classList.add('open');
+    infoPanel.setAttribute('aria-hidden', 'false');
+  }
+  function closeInfo() {
+    infoPanel.classList.remove('open');
+    infoOverlay.classList.remove('open');
+    infoPanel.setAttribute('aria-hidden', 'true');
+  }
+
+  btnInfo.addEventListener('click', openInfo);
+  infoClose.addEventListener('click', closeInfo);
+  infoOverlay.addEventListener('click', closeInfo);
+
+  /* =========================================================
+     TECLADO GLOBAL
+     ========================================================= */
+  document.addEventListener('keydown', e => {
+    // Si el panel está abierto, solo permitir cerrar
+    if (infoPanel.classList.contains('open')) {
+      if (e.key === 'Escape') { e.preventDefault(); closeInfo(); }
+      return;
+    }
+
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault(); next();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault(); prev();
+    } else if (e.key === 'Home') {
+      e.preventDefault(); show(0);
+    } else if (e.key === 'End') {
+      e.preventDefault(); show(total - 1);
+    } else if (e.key === 'i' || e.key === 'I') {
+      e.preventDefault(); openInfo();
+    } else if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+
+  show(0);
+</script>
+
+</body>
+</html>

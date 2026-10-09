@@ -1,0 +1,30 @@
+{
+    "name": "Academia Excel · Cursos",
+    "short_name": "Academia",
+    "description": "Cursos intensivos de Excel, análisis de datos y productividad. Funciona offline.",
+    "start_url": "./index.html",
+    "scope": "./",
+    "display": "standalone",
+    "orientation": "any",
+    "background_color": "#090d16",
+    "theme_color": "#090d16",
+    "lang": "es",
+    "dir": "ltr",
+    "categories": ["education", "productivity"],
+    "icons": [
+      {
+        "src": "icon.svg",
+        "sizes": "any",
+        "type": "image/svg+xml",
+        "purpose": "any"
+      }
+    ],
+    "shortcuts": [
+      {
+        "name": "Curso Excel Básico",
+        "short_name": "Excel Básico",
+        "url": "./curso-excel-basico.html",
+        "icons": [{ "src": "icon.svg", "sizes": "any" }]
+      }
+    ]
+  }
