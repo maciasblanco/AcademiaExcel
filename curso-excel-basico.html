@@ -546,6 +546,67 @@
     }
   }
 
+  /* ============ BOTONES FLOTANTES DE NAVEGACIÓN (MÓVIL) ============ */
+  .nav-arrow {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    color: var(--accent-emerald);
+    font-size: 26px;
+    font-weight: 900;
+    font-family: inherit;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 55;
+    transition: all .2s;
+    box-shadow: 0 6px 20px rgba(0,0,0,.5);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    line-height: 1;
+    padding: 0;
+  }
+  .nav-arrow:hover:not(:disabled) {
+    background: #1e293b;
+    border-color: var(--accent-green);
+    transform: translateY(-50%) scale(1.08);
+  }
+  .nav-arrow:active:not(:disabled) {
+    transform: translateY(-50%) scale(0.92);
+    background: var(--accent-green);
+    color: #090d16;
+  }
+  .nav-arrow:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+  }
+  .nav-arrow.left  { left: 12px; }
+  .nav-arrow.right { right: 12px; }
+
+  /* Solo visibles en móvil/tablet */
+  @media (max-width: 980px) {
+    .nav-arrow {
+      display: flex;
+    }
+  }
+  @media (max-width: 480px) {
+    .nav-arrow {
+      width: 46px;
+      height: 46px;
+      font-size: 22px;
+    }
+    .nav-arrow.left  { left: 8px; }
+    .nav-arrow.right { right: 8px; }
+  }
+
   /* Pista visual de swipe en móviles */
   @media (max-width: 980px) {
     .slide::after {
@@ -1278,6 +1339,10 @@
       <button id="btnNext"><span class="lbl">Siguiente</span> →</button>
     </div>
 
+    <!-- Botones flotantes laterales (móvil) -->
+    <button class="nav-arrow left"  id="navArrowLeft"  aria-label="Diapositiva anterior">‹</button>
+    <button class="nav-arrow right" id="navArrowRight" aria-label="Diapositiva siguiente">›</button>
+
   </main>
 </div>
 
@@ -1337,6 +1402,12 @@
     document.getElementById('progress').style.width = ((current + 1) / total * 100) + '%';
 
     slides[current].scrollTop = 0;
+
+    // Actualizar botones flotantes de navegación
+    const navLeft  = document.getElementById('navArrowLeft');
+    const navRight = document.getElementById('navArrowRight');
+    if (navLeft)  navLeft.disabled  = current === 0;
+    if (navRight) navRight.disabled = current === total - 1;
   }
 
   const next = () => show(current + 1);
@@ -1352,6 +1423,10 @@
   document.getElementById('menuToggle').addEventListener('click', () => {
     document.getElementById('sidebar').classList.toggle('open');
   });
+
+  // Conectar botones flotantes con las funciones de navegación
+  document.getElementById('navArrowLeft')?.addEventListener('click', prev);
+  document.getElementById('navArrowRight')?.addEventListener('click', next);
 
   /* =========================================================
      BASE DE CONOCIMIENTO — CONTENIDO EXTRA POR DIAPOSITIVA
@@ -1818,6 +1893,7 @@
       if (e.target.closest('.sidebar'))     return true;
       if (e.target.closest('.info-panel'))  return true;
       if (e.target.closest('.controls'))    return true;
+      if (e.target.closest('.nav-arrow'))   return true;
       return false;
     }
 
