@@ -1,32 +1,311 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-    <defs>
-      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="#064e3b"/>
-        <stop offset="0.6" stop-color="#10b981"/>
-        <stop offset="1" stop-color="#34d399"/>
-      </linearGradient>
-    </defs>
-  
-    <!-- Fondo redondeado -->
-    <rect width="512" height="512" rx="96" fill="url(#bg)"/>
-  
-    <!-- Cuadrícula tipo Excel -->
-    <g fill="none" stroke="#ffffff" stroke-width="18" stroke-linecap="round" opacity="0.95">
-      <path d="M156 150 H356"/>
-      <path d="M156 226 H356"/>
-      <path d="M156 302 H356"/>
-      <path d="M216 150 V326"/>
-      <path d="M296 150 V326"/>
-    </g>
-  
-    <!-- Barra verde tipo Excel (columna resaltada) -->
-    <rect x="296" y="150" width="60" height="176" fill="#052e22" opacity="0.55" rx="6"/>
-  
-    <!-- Texto -->
-    <text x="256" y="425" text-anchor="middle"
-          fill="#ffffff"
-          font-family="Inter, Segoe UI, sans-serif"
-          font-weight="900"
-          font-size="76"
-          letter-spacing="2">EXCEL</text>
-  </svg>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#090d16">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Academia Excel">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>Academia · Mis Cursos</title>
+<style>
+  :root{
+    --bg:#090d16; --card:#101726; --border:#1e293b;
+    --green:#10b981; --emerald:#34d399; --blue:#38bdf8;
+    --text:#f1f5f9; --muted:#94a3b8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:'Inter','Segoe UI',system-ui,sans-serif;
+    background:var(--bg); color:var(--text);
+    overflow-x:hidden;
+    padding-top:env(safe-area-inset-top);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+
+  .hero{
+    position:relative;
+    padding:36px 24px 30px;
+    background:
+      radial-gradient(900px 400px at 10% -10%, rgba(16,185,129,.18), transparent 60%),
+      radial-gradient(700px 400px at 90% 0%, rgba(56,189,248,.12), transparent 60%),
+      linear-gradient(180deg,#0b111e 0%, #090d16 100%);
+    border-bottom:1px solid var(--border);
+  }
+  .brand{
+    display:flex; align-items:center; gap:14px;
+    margin-bottom:20px;
+  }
+  .brand-logo{
+    width:52px;height:52px;border-radius:14px;
+    background:linear-gradient(135deg,#065f46 0%, #10b981 100%);
+    display:flex;align-items:center;justify-content:center;
+    font-size:26px;font-weight:800;color:#fff;
+    box-shadow:0 8px 24px rgba(16,185,129,.35);
+    flex-shrink:0;
+  }
+  .brand-text h1{
+    font-size:20px;font-weight:800;color:#fff;line-height:1.2;
+  }
+  .brand-text small{
+    display:block;font-size:11px;color:var(--emerald);
+    font-weight:700;letter-spacing:1.4px;text-transform:uppercase;margin-top:2px;
+  }
+  .hero h2{
+    font-size:26px;font-weight:800;line-height:1.2;margin-bottom:6px;
+  }
+  .hero h2 span{color:var(--emerald)}
+  .hero p{
+    font-size:14px;color:var(--muted);line-height:1.5;max-width:540px;
+  }
+  .stats{
+    display:flex;gap:16px;margin-top:20px;flex-wrap:wrap;
+  }
+  .stat{
+    background:rgba(15,23,42,.7);
+    border:1px solid var(--border);
+    padding:8px 14px;border-radius:12px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .stat b{color:var(--emerald);font-size:16px}
+  .stat span{font-size:12px;color:var(--muted)}
+
+  main{padding:24px 20px 40px;max-width:1100px;margin:0 auto}
+  .section-title{
+    font-size:13px;text-transform:uppercase;letter-spacing:1.4px;
+    color:var(--blue);font-weight:700;margin-bottom:14px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .section-title::before{
+    content:'';width:8px;height:8px;border-radius:50%;
+    background:var(--blue);box-shadow:0 0 10px var(--blue);
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:16px;
+  }
+
+  .course{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    overflow:hidden;
+    text-decoration:none;color:inherit;
+    display:flex;flex-direction:column;
+    transition:transform .2s, border-color .2s, box-shadow .2s;
+    position:relative;
+    cursor:pointer;
+  }
+  .course:active{transform:scale(.985)}
+  .course:hover{
+    border-color:rgba(16,185,129,.5);
+    box-shadow:0 14px 40px -10px rgba(16,185,129,.35);
+  }
+  .course-cover{
+    height:120px;
+    background:
+      linear-gradient(135deg,#064e3b 0%, #10b981 60%, #34d399 100%);
+    position:relative;
+    display:flex;align-items:center;justify-content:center;
+    font-size:56px;
+  }
+  .course-cover::after{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(circle at 80% 20%, rgba(255,255,255,.2), transparent 60%);
+    pointer-events:none;
+  }
+  .course-level{
+    position:absolute;top:12px;left:12px;
+    background:rgba(0,0,0,.55);
+    backdrop-filter:blur(6px);
+    color:#fff;font-size:10px;font-weight:700;
+    padding:4px 10px;border-radius:20px;
+    letter-spacing:1px;text-transform:uppercase;
+  }
+  .course-body{padding:16px 18px 18px;flex:1;display:flex;flex-direction:column}
+  .course-title{font-size:16px;font-weight:700;color:#fff;margin-bottom:6px;line-height:1.3}
+  .course-desc{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:12px;flex:1}
+  .course-meta{
+    display:flex;align-items:center;gap:12px;
+    font-size:11px;color:var(--muted);margin-bottom:14px;
+  }
+  .course-meta span{display:flex;align-items:center;gap:4px}
+  .course-btn{
+    background:var(--green);color:#052e22;
+    padding:10px 16px;border-radius:12px;
+    font-weight:800;font-size:13px;text-align:center;
+    letter-spacing:.3px;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    transition:background .2s;
+  }
+  .course:hover .course-btn{background:var(--emerald)}
+
+  .course.soon{
+    opacity:.55;cursor:not-allowed;
+    filter:grayscale(.4);
+  }
+  .course.soon:hover{border-color:var(--border);box-shadow:none}
+  .course.soon .course-cover{
+    background:linear-gradient(135deg,#1e293b 0%, #334155 100%);
+  }
+  .course.soon .course-btn{
+    background:#1e293b;color:#64748b;
+  }
+
+  .install-banner{
+    display:none;
+    margin-top:24px;
+    background:linear-gradient(135deg,rgba(56,189,248,.12), rgba(16,185,129,.12));
+    border:1px solid rgba(56,189,248,.35);
+    border-radius:14px;padding:14px 18px;
+    align-items:center;gap:14px;
+  }
+  .install-banner.show{display:flex}
+  .install-banner .icon{font-size:26px;flex-shrink:0}
+  .install-banner .txt{flex:1;min-width:0}
+  .install-banner .txt b{display:block;font-size:14px;color:#fff;margin-bottom:2px}
+  .install-banner .txt span{font-size:12px;color:var(--muted)}
+  .install-banner button{
+    background:var(--blue);color:#052e22;
+    border:0;padding:9px 16px;border-radius:10px;
+    font-weight:800;font-size:12.5px;cursor:pointer;
+    font-family:inherit;white-space:nowrap;
+  }
+
+  footer{
+    text-align:center;padding:24px 20px 40px;
+    font-size:11.5px;color:#475569;
+    border-top:1px solid var(--border);margin-top:20px;
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="brand">
+    <div class="brand-logo">E</div>
+    <div class="brand-text">
+      <h1>Academia Excel</h1>
+      <small>Formación Continua</small>
+    </div>
+  </div>
+  <h2>Hola, bienvenido de nuevo 👋</h2>
+  <p>Accede a todos tus cursos, sigue tu progreso y aprende a tu ritmo. Funciona sin conexión.</p>
+
+  <div class="stats">
+    <div class="stat"><b>1</b><span>Curso activo</span></div>
+    <div class="stat"><b>31</b><span>Lecciones</span></div>
+    <div class="stat"><b>100%</b><span>Offline</span></div>
+  </div>
+</header>
+
+<main>
+  <div class="section-title">Mis cursos</div>
+
+  <div class="grid">
+
+    <a class="course" href="curso-excel-basico.html">
+      <div class="course-cover">
+        <span class="course-level">Básico</span>
+        📊
+      </div>
+      <div class="course-body">
+        <div class="course-title">Curso Intensivo de Excel Básico</div>
+        <p class="course-desc">Fundamentos, fórmulas, funciones, tablas, gráficos, macros e IA aplicada. 2 días intensivos.</p>
+        <div class="course-meta">
+          <span>📚 31 lecciones</span>
+          <span>⏱️ 9 h 40 min</span>
+          <span>🤖 Incluye IA</span>
+        </div>
+        <div class="course-btn">▶ Comenzar curso</div>
+      </div>
+    </a>
+
+    <div class="course soon">
+      <div class="course-cover">
+        <span class="course-level">Próximo</span>
+        📈
+      </div>
+      <div class="course-body">
+        <div class="course-title">Excel Intermedio · Tablas Dinámicas</div>
+        <p class="course-desc">BUSCARV, BUSCARX, tablas dinámicas, formato condicional y dashboards.</p>
+        <div class="course-meta">
+          <span>🚧 En desarrollo</span>
+        </div>
+        <div class="course-btn">Próximamente</div>
+      </div>
+    </div>
+
+    <div class="course soon">
+      <div class="course-cover">
+        <span class="course-level">Próximo</span>
+        📉
+      </div>
+      <div class="course-body">
+        <div class="course-title">Power BI para Análisis de Datos</div>
+        <p class="course-desc">Modelado, DAX, visualizaciones interactivas y publicación de dashboards.</p>
+        <div class="course-meta">
+          <span>🚧 En desarrollo</span>
+        </div>
+        <div class="course-btn">Próximamente</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="install-banner" id="installBanner">
+    <div class="icon">📲</div>
+    <div class="txt">
+      <b>Instala la app en tu teléfono</b>
+      <span>Accede sin conexión, más rápido y como una app nativa.</span>
+    </div>
+    <button id="installBtn">Instalar</button>
+  </div>
+
+</main>
+
+<footer>
+  Academia Excel · v1.0 · Hecho con ❤️ para capacitación corporativa
+</footer>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(err => {
+        console.log('SW no registrado:', err);
+      });
+    });
+  }
+
+  let deferredPrompt = null;
+  const banner = document.getElementById('installBanner');
+  const installBtn = document.getElementById('installBtn');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    banner.classList.add('show');
+  });
+
+  installBtn?.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      banner.classList.remove('show');
+    }
+    deferredPrompt = null;
+  });
+
+  window.addEventListener('appinstalled', () => {
+    banner.classList.remove('show');
+  });
+</script>
+</body>
+</html>
