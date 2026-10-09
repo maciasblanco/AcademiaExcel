@@ -545,6 +545,21 @@
       font-size: 12px;
     }
   }
+
+  /* Pista visual de swipe en móviles */
+  @media (max-width: 980px) {
+    .slide::after {
+      content: '← Desliza para navegar →';
+      display: block;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      opacity: .5;
+      margin-top: 30px;
+      padding-top: 16px;
+      border-top: 1px dashed var(--border-color);
+    }
+  }
 </style>
 </head>
 <body data-day="1">
@@ -1778,6 +1793,68 @@
       });
     });
   }
+</script>
+
+<script>
+  /* =========================================================
+     NAVEGACIÓN TÁCTIL POR DESLIZAMIENTO (SWIPE)
+     Solo activo en dispositivos con pantalla táctil.
+     - Desliza hacia la IZQUIERDA → siguiente diapositiva
+     - Desliza hacia la DERECHA → diapositiva anterior
+     ========================================================= */
+  (function() {
+    let startX = 0;
+    let startY = 0;
+    let startTime = 0;
+
+    const MIN_DISTANCE  = 60;   // Mínima distancia horizontal en px
+    const MAX_TIME      = 800;  // Tiempo máximo del gesto en ms
+    const MAX_VERTICAL  = 80;   // Si se mueve más en vertical → es scroll
+
+    // Ignorar gestos cuando el sidebar o el panel de info están abiertos
+    function ignorarGesto(e) {
+      if (document.getElementById('sidebar').classList.contains('open'))    return true;
+      if (document.getElementById('infoPanel').classList.contains('open'))  return true;
+      if (e.target.closest('.sidebar'))     return true;
+      if (e.target.closest('.info-panel'))  return true;
+      if (e.target.closest('.controls'))    return true;
+      return false;
+    }
+
+    document.addEventListener('touchstart', function(e) {
+      if (ignorarGesto(e)) return;
+      if (e.touches.length !== 1) return;   // Ignorar pinch zoom
+
+      const t = e.touches[0];
+      startX = t.clientX;
+      startY = t.clientY;
+      startTime = Date.now();
+    }, { passive: true });
+
+    document.addEventListener('touchend', function(e) {
+      if (ignorarGesto(e)) return;
+      if (e.changedTouches.length !== 1) return;
+
+      const t = e.changedTouches[0];
+      const dx = t.clientX - startX;
+      const dy = t.clientY - startY;
+      const dt = Date.now() - startTime;
+
+      // Condiciones para que cuente como swipe horizontal
+      if (dt > MAX_TIME) return;                        // Muy lento
+      if (Math.abs(dx) < MIN_DISTANCE) return;          // Muy corto
+      if (Math.abs(dy) > MAX_VERTICAL) return;          // Muy vertical
+      if (Math.abs(dx) < Math.abs(dy) * 1.5) return;    // Diagonal
+
+      if (dx < 0) {
+        // ← Deslizó hacia la izquierda → SIGUIENTE
+        next();
+      } else {
+        // → Deslizó hacia la derecha → ANTERIOR
+        prev();
+      }
+    }, { passive: true });
+  })();
 </script>
 
 </body>
