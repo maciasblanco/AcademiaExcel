@@ -15,7 +15,7 @@
   :root{
     --bg:#090d16; --card:#101726; --border:#1e293b;
     --green:#10b981; --emerald:#34d399; --blue:#38bdf8;
-    --text:#f1f5f9; --muted:#94a3b8;
+    --text:#f1f5f9; --muted:#94a3b8; --purple:#a855f7;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{height:100%}
@@ -85,6 +85,10 @@
     background:var(--blue);box-shadow:0 0 10px var(--blue);
   }
 
+  /* Ajuste para la nueva sección de encuesta */
+  .section-title.purple { color: var(--purple); margin-top: 30px; }
+  .section-title.purple::before { background: var(--purple); box-shadow: 0 0 10px var(--purple); }
+
   .grid{
     display:grid;
     grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
@@ -109,8 +113,7 @@
   }
   .course-cover{
     height:120px;
-    background:
-      linear-gradient(135deg,#064e3b 0%, #10b981 60%, #34d399 100%);
+    background:linear-gradient(135deg,#064e3b 0%, #10b981 60%, #34d399 100%);
     position:relative;
     display:flex;align-items:center;justify-content:center;
     font-size:56px;
@@ -145,6 +148,21 @@
     transition:background .2s;
   }
   .course:hover .course-btn{background:var(--emerald)}
+
+  /* ESTILOS EXCLUSIVOS PARA LA TARJETA DE ENCUESTA */
+  .course.survey:hover {
+    border-color: rgba(168, 85, 247, 0.5);
+    box-shadow: 0 14px 40px -10px rgba(168, 85, 247, 0.35);
+  }
+  .course.survey .course-cover {
+    background: linear-gradient(135deg, #4c1d95 0%, #a855f7 100%);
+  }
+  .course.survey .course-btn {
+    background: var(--purple); color: #fff;
+  }
+  .course.survey:hover .course-btn {
+    background: #c084fc;
+  }
 
   .course.soon{
     opacity:.55;cursor:not-allowed;
@@ -258,6 +276,28 @@
     </div>
 
   </div>
+
+  <!-- NUEVA SECCIÓN DE ENCUESTA -->
+  <div class="section-title purple">Tu opinión nos importa</div>
+  
+  <div class="grid">
+    <a class="course survey" href="encuesta-satisfaccion/opinion_curso.html">
+      <div class="course-cover">
+        <span class="course-level">Encuesta</span>
+        📝
+      </div>
+      <div class="course-body">
+        <div class="course-title">Encuesta de Satisfacción</div>
+        <p class="course-desc">Ayúdanos a mejorar. Cuéntanos qué te pareció el Curso Intensivo de Excel Básico.</p>
+        <div class="course-meta">
+          <span>⏱️ 2 minutos</span>
+          <span>⭐ Anónima</span>
+        </div>
+        <div class="course-btn">Responder encuesta</div>
+      </div>
+    </a>
+  </div>
+  <!-- FIN DE NUEVA SECCIÓN -->
 
   <div class="install-banner" id="installBanner">
     <div class="icon">📲</div>
