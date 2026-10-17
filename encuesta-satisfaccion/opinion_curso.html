@@ -223,8 +223,8 @@
 </div>
 
 <script>
-  // 👉 REEMPLAZA con la URL de tu implementación de Apps Script (termina en /exec)
-  const SCRIPT_URL = "https://script.google.com/macros/s/TU_ID_DE_IMPLEMENTACION/exec";
+  // URL Real de tu Apps Script
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwdhVGaonkeJa_M-HQVkrfpUzuaGZgRMjKHKl_qCvmYg1WRYrvtqtEtfb00Dfv8-A9g/exec";
 
   const form = document.getElementById('surveyForm');
   const btn  = document.getElementById('btnSubmit');
@@ -237,20 +237,22 @@
     msg.className = 'message';
     msg.textContent = '';
 
-    // Construimos el FormData con todos los campos del formulario
-    const data = new FormData(form);
-
-    // Añadimos la fecha/hora del envío (útil para el Sheet)
+    // 1. Usamos URLSearchParams (envía datos como formulario estándar, ideal para Apps Script)
+    const data = new URLSearchParams(new FormData(form));
+    
+    // 2. Añadimos la fecha automáticamente
     data.append('fecha', new Date().toLocaleString('es-ES'));
 
     try {
+      // 3. Hacemos el envío
       await fetch(SCRIPT_URL, {
         method: 'POST',
-        body: data,
-        mode: 'no-cors' // Apps Script no soporta CORS con JSON puro; con FormData funciona
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: data.toString()
       });
 
-      // Con mode:'no-cors' no podemos leer la respuesta, asumimos éxito si no hay error de red
       msg.className = 'message success';
       msg.textContent = '¡Gracias! Tus respuestas fueron enviadas correctamente.';
       form.reset();
