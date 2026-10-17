@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Encuesta de Satisfacción - Curso de Excel</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 30px 15px;
+  }
+  .container {
+    background: #fff;
+    max-width: 720px;
+    width: 100%;
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    padding: 40px 35px;
+  }
+  h1 {
+    color: #1e3c72;
+    font-size: 1.6rem;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .subtitle {
+    color: #666;
+    text-align: center;
+    font-size: 0.95rem;
+    margin-bottom: 30px;
+  }
+  .question {
+    margin-bottom: 28px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid #eee;
+  }
+  .question:last-of-type { border-bottom: none; }
+  .question label.title {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 14px;
+    font-size: 1rem;
+  }
+  .icons {
+    display: flex;
+    justify-content: space-around;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .icons input[type="radio"] { display: none; }
+  .icons label {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 8px;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    min-width: 70px;
+    flex: 1;
+  }
+  .icons label:hover {
+    background: #f0f4ff;
+    transform: translateY(-3px);
+  }
+  .icons .emoji { font-size: 2.2rem; line-height: 1; }
+  .icons .text {
+    font-size: 0.72rem;
+    color: #555;
+    margin-top: 6px;
+    text-align: center;
+    font-weight: 500;
+  }
+  .icons input[type="radio"]:checked + label {
+    border-color: #2a5298;
+    background: #e8f0ff;
+    box-shadow: 0 4px 12px rgba(42,82,152,0.25);
+  }
+  textarea, input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border: 1.5px solid #ddd;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    resize: vertical;
+    transition: border 0.2s;
+  }
+  textarea:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: #2a5298;
+  }
+  textarea { min-height: 80px; }
+  button[type="submit"] {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    margin-top: 10px;
+  }
+  button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(42,82,152,0.4);
+  }
+  button[type="submit"]:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .message {
+    text-align: center;
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 18px;
+    font-weight: 600;
+    display: none;
+  }
+  .message.success { background: #d4edda; color: #155724; display: block; }
+  .message.error   { background: #f8d7da; color: #721c24; display: block; }
+  .required { color: #e74c3c; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>📊 Encuesta de Satisfacción</h1>
+  <p class="subtitle">Curso de Excel · Tu opinión nos ayuda a mejorar</p>
+
+  <form id="surveyForm">
+
+    <!-- Pregunta 1 -->
+    <div class="question">
+      <label class="title">1. ¿Cómo calificas el contenido del curso? <span class="required">*</span></label>
+      <div class="icons">
+        <input type="radio" name="contenido" id="c1" value="1" required><label for="c1"><span class="emoji">😡</span><span class="text">Muy malo</span></label>
+        <input type="radio" name="contenido" id="c2" value="2"><label for="c2"><span class="emoji">🙁</span><span class="text">Malo</span></label>
+        <input type="radio" name="contenido" id="c3" value="3"><label for="c3"><span class="emoji">😐</span><span class="text">Regular</span></label>
+        <input type="radio" name="contenido" id="c4" value="4"><label for="c4"><span class="emoji">🙂</span><span class="text">Bueno</span></label>
+        <input type="radio" name="contenido" id="c5" value="5"><label for="c5"><span class="emoji">😍</span><span class="text">Excelente</span></label>
+      </div>
+    </div>
+
+    <!-- Pregunta 2 -->
+    <div class="question">
+      <label class="title">2. ¿El ritmo del curso fue adecuado? <span class="required">*</span></label>
+      <div class="icons">
+        <input type="radio" name="ritmo" id="r1" value="1" required><label for="r1"><span class="emoji">🐢</span><span class="text">Muy lento</span></label>
+        <input type="radio" name="ritmo" id="r2" value="2"><label for="r2"><span class="emoji">🚶</span><span class="text">Lento</span></label>
+        <input type="radio" name="ritmo" id="r3" value="3"><label for="r3"><span class="emoji">👌</span><span class="text">Adecuado</span></label>
+        <input type="radio" name="ritmo" id="r4" value="4"><label for="r4"><span class="emoji">🏃</span><span class="text">Rápido</span></label>
+        <input type="radio" name="ritmo" id="r5" value="5"><label for="r5"><span class="emoji">🚀</span><span class="text">Muy rápido</span></label>
+      </div>
+    </div>
+
+    <!-- Pregunta 3 -->
+    <div class="question">
+      <label class="title">3. ¿El instructor resolvió tus dudas? <span class="required">*</span></label>
+      <div class="icons">
+        <input type="radio" name="instructor" id="i1" value="1" required><label for="i1"><span class="emoji">❌</span><span class="text">Nunca</span></label>
+        <input type="radio" name="instructor" id="i2" value="2"><label for="i2"><span class="emoji">😕</span><span class="text">Casi nunca</span></label>
+        <input type="radio" name="instructor" id="i3" value="3"><label for="i3"><span class="emoji">🤔</span><span class="text">A veces</span></label>
+        <input type="radio" name="instructor" id="i4" value="4"><label for="i4"><span class="emoji">👍</span><span class="text">Casi siempre</span></label>
+        <input type="radio" name="instructor" id="i5" value="5"><label for="i5"><span class="emoji">🌟</span><span class="text">Siempre</span></label>
+      </div>
+    </div>
+
+    <!-- Pregunta 4 -->
+    <div class="question">
+      <label class="title">4. ¿Los ejemplos prácticos te resultaron útiles? <span class="required">*</span></label>
+      <div class="icons">
+        <input type="radio" name="practica" id="p1" value="1" required><label for="p1"><span class="emoji">👎</span><span class="text">Nada</span></label>
+        <input type="radio" name="practica" id="p2" value="2"><label for="p2"><span class="emoji">🙄</span><span class="text">Poco</span></label>
+        <input type="radio" name="practica" id="p3" value="3"><label for="p3"><span class="emoji">😐</span><span class="text">Regular</span></label>
+        <input type="radio" name="practica" id="p4" value="4"><label for="p4"><span class="emoji">😀</span><span class="text">Bastante</span></label>
+        <input type="radio" name="practica" id="p5" value="5"><label for="p5"><span class="emoji">🤩</span><span class="text">Mucho</span></label>
+      </div>
+    </div>
+
+    <!-- Pregunta 5 -->
+    <div class="question">
+      <label class="title">5. Satisfacción general con el curso <span class="required">*</span></label>
+      <div class="icons">
+        <input type="radio" name="general" id="g1" value="1" required><label for="g1"><span class="emoji">😠</span><span class="text">Muy insatisf.</span></label>
+        <input type="radio" name="general" id="g2" value="2"><label for="g2"><span class="emoji">😞</span><span class="text">Insatisfecho</span></label>
+        <input type="radio" name="general" id="g3" value="3"><label for="g3"><span class="emoji">😶</span><span class="text">Neutral</span></label>
+        <input type="radio" name="general" id="g4" value="4"><label for="g4"><span class="emoji">😊</span><span class="text">Satisfecho</span></label>
+        <input type="radio" name="general" id="g5" value="5"><label for="g5"><span class="emoji">🥰</span><span class="text">Muy satisf.</span></label>
+      </div>
+    </div>
+
+    <!-- Pregunta 6: recomendación -->
+    <div class="question">
+      <label class="title">6. ¿Recomendarías este curso? <span class="required">*</span></label>
+      <div class="icons">
+        <input type="radio" name="recomienda" id="rec1" value="No" required><label for="rec1"><span class="emoji">👎</span><span class="text">No</span></label>
+        <input type="radio" name="recomienda" id="rec2" value="Tal vez"><label for="rec2"><span class="emoji">🤷</span><span class="text">Tal vez</span></label>
+        <input type="radio" name="recomienda" id="rec3" value="Sí"><label for="rec3"><span class="emoji">👍</span><span class="text">Sí</span></label>
+      </div>
+    </div>
+
+    <!-- Pregunta 7: comentario abierto -->
+    <div class="question">
+      <label class="title">7. ¿Qué mejorarías del curso? (opcional)</label>
+      <textarea name="comentario" placeholder="Escribe tu sugerencia aquí..."></textarea>
+    </div>
+
+    <button type="submit" id="btnSubmit">Enviar respuestas ✅</button>
+    <div class="message" id="msg"></div>
+  </form>
+</div>
+
+<script>
+  // 👉 REEMPLAZA con la URL de tu implementación de Apps Script (termina en /exec)
+  const SCRIPT_URL = "https://script.google.com/macros/s/TU_ID_DE_IMPLEMENTACION/exec";
+
+  const form = document.getElementById('surveyForm');
+  const btn  = document.getElementById('btnSubmit');
+  const msg  = document.getElementById('msg');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+    msg.className = 'message';
+    msg.textContent = '';
+
+    // Construimos el FormData con todos los campos del formulario
+    const data = new FormData(form);
+
+    // Añadimos la fecha/hora del envío (útil para el Sheet)
+    data.append('fecha', new Date().toLocaleString('es-ES'));
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: data,
+        mode: 'no-cors' // Apps Script no soporta CORS con JSON puro; con FormData funciona
+      });
+
+      // Con mode:'no-cors' no podemos leer la respuesta, asumimos éxito si no hay error de red
+      msg.className = 'message success';
+      msg.textContent = '¡Gracias! Tus respuestas fueron enviadas correctamente.';
+      form.reset();
+    } catch (err) {
+      console.error(err);
+      msg.className = 'message error';
+      msg.textContent = 'Hubo un error al enviar. Inténtalo de nuevo.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Enviar respuestas ✅';
+    }
+  });
+</script>
+</body>
+</html>
